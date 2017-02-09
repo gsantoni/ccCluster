@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from iotbx.reflection_file_reader import any_reflection_file
+from iotbx.xds.integrate_hkl import reader
 import cctbx.miller as mil
 from math import *
 import collections
@@ -139,8 +140,11 @@ class ccList():
     def loadReflections(self):
         Arrays = {}
         for x in self.argList:
-            hklFile = any_reflection_file(x)
-            Arrays[x]= hklFile.as_miller_arrays()
+            if reader.is_integrate_hkl_file(x):
+                Arrays[x]= reader().as_miller_arrays(x)
+            else:
+                hklFile = any_reflection_file(x)
+                Arrays[x]= hklFile.as_miller_arrays()
             print('File %s has been loaded'%(x))
             #Printing output file
 #        print('Labels', file=self.LogFile)
