@@ -31,6 +31,7 @@ class ccCalc():
             if 'XDS_ASCII.HKL' in files:
                 self.argList.append(folder+'/XDS_ASCII.HKL')
         self.Arrays= self.loadReflections()
+        #self.writeLog()
         self.results = self.calcSerial()
         #self.writeLog()
 
@@ -42,9 +43,9 @@ class ccCalc():
             Arrays[x]= hklFile.as_miller_arrays()
             print('File %s has been loaded'%(x))
             #Printing output file
-#        print('Labels', file=self.LogFile)
-#        for n in enumerate(self.argList):
-#            print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
         return Arrays
 
     def writeLog(self):
@@ -134,7 +135,7 @@ class ccList():
         self.argList= Arglist
         self.Arrays= self.loadReflections()
         self.results = self.calcSerial()
-        #self.writeLog()
+
 
         
     def loadReflections(self):
@@ -147,9 +148,9 @@ class ccList():
                 Arrays[x]= hklFile.as_miller_arrays()
             print('File %s has been loaded'%(x))
             #Printing output file
-#        print('Labels', file=self.LogFile)
-#        for n in enumerate(self.argList):
-#            print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
         return Arrays
 
     def writeLog(self):

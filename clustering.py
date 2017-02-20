@@ -1,6 +1,7 @@
 from __future__ import print_function
 
-
+from iotbx.reflection_file_reader import any_reflection_file
+import cctbx.miller as mil
 from scipy.cluster import hierarchy
 from scipy.spatial import distance
 import sys
@@ -62,7 +63,7 @@ class Clustering():
                 if line.strip() == 'Correlation coefficients':
                     break
                 goodLine = line.split()
-                self.labelList.append("../%s"%(goodLine[2].strip('\n')))
+                self.labelList.append("%s"%(goodLine[2].strip('\n')))
         return self.labelList
         
 
@@ -131,14 +132,6 @@ class Clustering():
         plt.show()
 
 
-    def checkMultiplicity(self, thr):
-        FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
-        counter=collections.Counter(FlatC)
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
-        print('You are clustering with a threshold of %s'%(thr))
-        print('The biggest cluster contains %s datasets from a total of %s'%(counter[Best], len(self.labelList)))
-
-
     def thrEstimation(self):
         x = 0.00
         dx = 0.05
@@ -157,8 +150,62 @@ class Clustering():
         for a, b in zip (x_list, dy):
             if b == max(dy):
                 return a
+    def checkMultiplicity(self, thr):
+        FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
+        counter=collections.Counter(FlatC)
+        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        print('You are clustering with a threshold of %s'%(thr))
+        print('The biggest cluster contains %s datasets from a total of %s'%(counter[Best], len(self.labelList)))
 
 
+    def completenessEstimation(self):
+        x = 0.00
+        dx = 0.05
+        while x > 1:
+            FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
+            counter=collections.Counter(FlatC)
+            Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+            
+    def minimalForCompleteness(self):
+        labels=self.createLabels()
+        x = 0.00
+        dx = 0.05
+        countsList = {}
+        x_list = []
+        while x < 1:
+            Arrays= {}
+            FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
+            counter=collections.Counter(FlatC)
+            Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+            toProcess=[Best]
+            print(Best)
+            y=0
+            for cluster, filename in zip(FlatC,labels):
+                if cluster in toProcess:
+                    hklFile = any_reflection_file(filename)
+                    b= hklFile.as_miller_arrays()
+                    for column in b:
+                        if column.is_xray_intensity_array():
+                            Arrays[y]=column
+                            break
+                    y+=1
+##
+#OK, but not concatenating all the possible files
+            try:
+                Arr = Arrays[0]
+                print("reference",Arr.size())
+            except:
+                countsList.append(0)
+            for label in range(1, y):
+                Arr = Arr.concatenate(Arrays[label])
+                print(Arr.completeness())
+                print(Arr.size())
+            countsList[x]=(Arr.completeness())
+
+            x+= dx
+        print(countsList)
+
+        
     def merge(self, anomFlag, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         Log = open(self.CurrentDir+'/.cc_cluster.log', 'a')

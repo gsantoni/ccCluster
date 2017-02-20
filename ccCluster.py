@@ -92,7 +92,7 @@ else:
 
 
 CC = Clustering(correlationFile)
-Tree = CC.tree()
+Tree = CC.avgTree()
 etiquets=CC.createLabels()
 threshold = CC.thrEstimation()
 
@@ -373,7 +373,9 @@ def main():
         CC.checkMultiplicity(threshold) 
         CC.merge('ano',threshold)
     elif args.count:
-        CC.checkMultiplicity(threshold)
+        #CC.checkMultiplicity(threshold)
+        CC.minimalForCompleteness()
+
     elif args.est:
         a = CC.thrEstimation()
         print(a)
