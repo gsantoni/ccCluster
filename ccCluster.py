@@ -315,10 +315,10 @@ class Ui_MainWindow(object):
             if cluster in ToProcess:
                 OUT = open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/XSCALE.INP'%(self.threshold,cluster,self.anomFlag), 'a')
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(self.threshold,cluster,self.anomFlag), 'a')
-                print ('INPUT_FILE= %s'%(filename), file=OUT)
+                print ('INPUT_FILE= ../%s'%(filename), file=OUT)
                 #print ('INCLUDE_RESOLUTION_RANGE=20, 2', file=OUT)
                 print ('MINIMUM_I/SIGMA= 0', file=OUT)
-                print ('XDSIN %s'%(filename), file= Pointless)
+                print ('XDSIN ../%s'%(filename), file= Pointless)
                 OUT.close()
                 Pointless.close()
         #optional run of XSCALE

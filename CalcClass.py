@@ -150,13 +150,13 @@ class ccList():
             #Printing output file
         print('Labels', file=self.LogFile)
         for n in enumerate(self.argList):
-            print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
         return Arrays
 
     def writeLog(self):
         print('Labels', file=self.LogFile)
         for n in enumerate(self.argList):
-            print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
         print('Correlation coefficients', file=self.LogFile)
         for L in self.results:
             print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
