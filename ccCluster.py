@@ -52,6 +52,8 @@ parser.add_argument("-p", "--shell",action="store_true", dest="shell", default=F
 parser.add_argument("-c", "--count",action="store_true", dest="count", default=False, help="Counts datasets in the biggest cluster and exit")
 parser.add_argument("-e", "--estimation",action="store_true", dest="est", default=False, help="Tries to guess an optimal threshold value")
 parser.add_argument("-f", dest="HKLlist", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
+#Minimal for completeness
+parser.add_argument("-m", dest="minimal", default= False , action="store_true" , help='Gives minimal threshold for completeness')
 
 #parser.print_help()
 args= parser.parse_args()
@@ -366,16 +368,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 def main():
     if args.threshold:
         threshold = args.threshold
+    elif args.minimal:
+        threshold = CC.minimalForCompleteness()
     else:
-        threshold = CC.thrEstimation()
+        threshold= CC.thrEstimation()
 
     if args.shell:
         CC.checkMultiplicity(threshold) 
         CC.merge('ano',threshold)
     elif args.count:
-        #CC.checkMultiplicity(threshold)
-        CC.minimalForCompleteness()
-
+        CC.checkMultiplicity(threshold)
     elif args.est:
         a = CC.thrEstimation()
         print(a)

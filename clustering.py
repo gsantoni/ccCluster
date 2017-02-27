@@ -178,7 +178,6 @@ class Clustering():
             counter=collections.Counter(FlatC)
             Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
             toProcess=[Best]
-            print(Best)
             y=0
             for cluster, filename in zip(FlatC,labels):
                 if cluster in toProcess:
@@ -189,21 +188,24 @@ class Clustering():
                             Arrays[y]=column
                             break
                     y+=1
-##
-#OK, but not concatenating all the possible files
             try:
                 Arr = Arrays[0]
-                print("reference",Arr.size())
             except:
                 countsList.append(0)
             for label in range(1, y):
-                Arr = Arr.concatenate(Arrays[label])
-                print(Arr.completeness())
-                print(Arr.size())
+                try:
+                    Arr = Arr.concatenate(Arrays[label])
+                except:
+                    pass
             countsList[x]=(Arr.completeness())
 
             x+= dx
-        print(countsList)
+#return minimal for max
+        L = []
+        for key in countsList:
+            if countsList[key]>0.98:
+                L.append(key)
+        return min(L)
 
         
     def merge(self, anomFlag, thr):
