@@ -167,6 +167,7 @@ class Clustering():
             Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
             
     def minimalForCompleteness(self):
+        print("Running estimator for minimal threshold for completeness")
         labels=self.createLabels()
         x = 0.00
         dx = 0.05
@@ -198,9 +199,8 @@ class Clustering():
                 except:
                     pass
             countsList[x]=(Arr.completeness())
-
             x+= dx
-#return minimal for max
+       # return minimal for max
         L = []
         for key in countsList:
             if countsList[key]>0.98:
