@@ -150,6 +150,7 @@ class Clustering():
         for a, b in zip (x_list, dy):
             if b == max(dy):
                 return a
+
     def checkMultiplicity(self, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         counter=collections.Counter(FlatC)
@@ -205,7 +206,8 @@ class Clustering():
         for key in countsList:
             if countsList[key]>0.98:
                 L.append(key)
-        return min(L)
+        L.sort()
+        return L[0]
 
         
     def merge(self, anomFlag, thr):
@@ -226,7 +228,7 @@ class Clustering():
 
 
 #Processing pipeline, 
-#Doeas all the XSCALE run
+#Does all the XSCALE run
 #NB has to be edited to run out of the GUI!
 
         for x in ToProcess:
@@ -239,6 +241,8 @@ class Clustering():
                 print('pointless hklout clustered.mtz << eof', file=Pointless)
                 if anomFlag=='ano':
                     print('FRIEDEL\'S_LAW= FALSE', file=Xscale)
+                elif anomFlag=='no_ano':
+                    print('FRIEDEL\'S_LAW= TRUE', file=Xscale)
                 Xscale.close()
                 Pointless.close()
 
@@ -247,7 +251,7 @@ class Clustering():
                 OUT = open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/XSCALE.INP'%(float(thr),cluster,anomFlag), 'a')
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),cluster,anomFlag), 'a')
                 print ('INPUT_FILE= ../%s'%(filename), file=OUT)
-                #print ('INCLUDE_RESOLUTION_RANGE=20, 2', file=OUT)
+                print ('INCLUDE_RESOLUTION_RANGE=20, 1.8', file=OUT)
                 print ('MINIMUM_I/SIGMA= 0', file=OUT)
                 print ('XDSIN ../%s'%(filename), file= Pointless)
                 OUT.close()

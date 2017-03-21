@@ -375,7 +375,7 @@ def main():
 
     if args.shell:
         CC.checkMultiplicity(threshold) 
-        CC.merge('ano',threshold)
+        CC.merge('no_ano',threshold)
     elif args.count:
         CC.checkMultiplicity(threshold)
     elif args.est:

@@ -1,0 +1,16 @@
+# Ignored Mathematica files shall be prefixed by _
+.cache
+_*.nb
+*.fdb_latexmk
+*.gz
+*.pdf
+*.pyc
+.DS_Store
+*~
+*.swp
+.git-notifier*
+git-notifier.log
+.gitversion
+
+doc/sphinx/build
+doc/sphinx/installation.stable_release.json
