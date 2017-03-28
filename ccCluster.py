@@ -54,6 +54,7 @@ parser.add_argument("-e", "--estimation",action="store_true", dest="est", defaul
 parser.add_argument("-f", dest="HKLlist", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
 #Minimal for completeness
 parser.add_argument("-m", dest="minimal", default= False , action="store_true" , help='Gives minimal threshold for completeness')
+parser.add_argument("-u", dest="cell", default= False , action="store_true" , help='Unit cell based clustering. requires list of input files')
 
 #parser.print_help()
 args= parser.parse_args()
@@ -83,6 +84,10 @@ if args.XSCALEfile is None:
         print('No input specified, calculating Correlation coefficients')
         print('this might take a while')
         CalcClass.ccCalc()
+        correlationFile='ccClusterLog.txt'
+    elif args.cell:
+        print("Calculating unit cell distance between specified files")
+        CalcClass.cellList(args.HKLlist)
         correlationFile='ccClusterLog.txt'
     else:
         print("Calculating CC between specified files")

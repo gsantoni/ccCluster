@@ -195,6 +195,50 @@ class ccList():
             print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))         
         return gen1.next(), gen2.next(),sqrt(1.0001-cc**2)
 
+    def calcSerial(self):
+        print('Correlation coefficients', file=self.LogFile)
+        for x in itertools.combinations(self.Arrays, 2):
+            a, b, cc = self.ccPrint(x)
+            print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
+
+    def calcAll(self):
+        proc = Pool(4)
+        a, b, cc = zip(*proc.map(self.ccPrint, itertools.combinations(self.Arrays, 2)))
+        L = zip(a, b, cc)
+        return L
+
+class cellList()
+    def __init__(self, Arglist):
+        self.LogFile=open('ccClusterLog.txt', 'w')
+        self.CurrentDir= os.getcwd()
+        self.argList= Arglist
+        self.Arrays= self.loadReflections()
+        self.results = self.cellSerial()
+
+
+        
+    def loadReflections(self):
+        Arrays = {}
+        for x in self.argList:
+            if reader.is_integrate_hkl_file(x):
+                Arrays[x]= reader().as_miller_arrays(x)
+            else:
+                hklFile = any_reflection_file(x)
+                Arrays[x]= hklFile.as_miller_arrays()
+            print('File %s has been loaded'%(x))
+            #Printing output file
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
+        return Arrays
+
+    def writeLog(self):
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
+        print('Correlation coefficients', file=self.LogFile)
+        for L in self.results:
+            print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
 
     def cellPrint( arglist):
         HKLarrays
@@ -217,17 +261,14 @@ class ccList():
         variation = [fabs(a1-a2)/min(a1,a2),fabs(b1-b2)/min(b1,b2),fabs(c1-c2)/min(c1, c2)]
         return gen1.next(), gen2.next(), max(variation)
 
-    def calcSerial(self):
+    def cellSerial(self):
         print('Correlation coefficients', file=self.LogFile)
         for x in itertools.combinations(self.Arrays, 2):
-            a, b, cc = self.ccPrint(x)
+            a, b, cc = self.cellPrint(x)
             print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
 
-    def calcAll(self):
-        proc = Pool(4)
-        a, b, cc = zip(*proc.map(self.ccPrint, itertools.combinations(self.Arrays, 2)))
-        L = zip(a, b, cc)
-        return L
+
+
 
 def main():
     parser = argparse.ArgumentParser()
