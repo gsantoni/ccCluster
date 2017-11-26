@@ -229,8 +229,6 @@ class Clustering():
 
 #Processing pipeline, 
 #Does all the XSCALE run
-#NB has to be edited to run out of the GUI!
-
         for x in ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
                 os.mkdir(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s'%(float(thr),x, anomFlag))
@@ -251,7 +249,7 @@ class Clustering():
                 OUT = open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/XSCALE.INP'%(float(thr),cluster,anomFlag), 'a')
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),cluster,anomFlag), 'a')
                 print ('INPUT_FILE= ../%s'%(filename), file=OUT)
-                print ('INCLUDE_RESOLUTION_RANGE=20, 1.8', file=OUT)
+                #print ('INCLUDE_RESOLUTION_RANGE=20, 1.8', file=OUT)
                 print ('MINIMUM_I/SIGMA= 0', file=OUT)
                 print ('XDSIN ../%s'%(filename), file= Pointless)
                 OUT.close()
@@ -262,12 +260,13 @@ class Clustering():
         for x in ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
                 plt.savefig(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr),x,anomFlag))
-                P= subprocess.Popen('/opt/pxsoft/xds/v20161205/linux-x86_64/xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
+                P= subprocess.Popen('/opt/pxsoft/xds/vdefault/linux-x86_64/xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
                 P.wait()
                 print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag), 'a')
-                print('COPY \n RESOLUTION 20 2.0 \n TOLERANCE 4 \n eof', file= Pointless)
+                print('COPY \n TOLERANCE 4 \n eof', file= Pointless)
                 Pointless.close()
+                os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(self.threshold,x,self.anomFlag ), st.st_mode | 0o111)              
                 newProcesses.append([thr,x, anomFlag])
 
 def main():

@@ -207,9 +207,9 @@ class ccList():
         L = zip(a, b, cc)
         return L
 
-class cellList()
+class cellList():
     def __init__(self, Arglist):
-        self.LogFile=open('ccClusterLog.txt', 'w')
+        self.LogFile=open('cellClusterLog.txt', 'w')
         self.CurrentDir= os.getcwd()
         self.argList= Arglist
         self.Arrays= self.loadReflections()
@@ -240,10 +240,9 @@ class cellList()
         for L in self.results:
             print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
 
-    def cellPrint( arglist):
-        HKLarrays
-        Array1 = HKLarrays[arglist[0]]
-        Array2 =HKLarrays[arglist[1]]
+    def cellPrint(self, arglist):
+        Array1 = self.Arrays[arglist[0]]
+        Array2 = self.Arrays[arglist[1]]
 
         gen1 = (i for i,F in enumerate(self.argList) if F == arglist[0])
         gen2 = (i for i,F in enumerate(self.argList) if F == arglist[1])

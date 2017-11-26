@@ -11,9 +11,7 @@ __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
 
-from numpy import arange, sin, pi
 from PyQt4 import QtGui, QtCore
-from math import sqrt
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
@@ -27,12 +25,10 @@ from scipy.spatial import distance
 import collections
 import operator
 import sys
-import scipy
+
 from time import sleep
 import os
 import numpy as np
-import subprocess
-import shutil
 
 
 from resultsTab import resultsTab
@@ -338,7 +334,7 @@ class Ui_MainWindow(object):
                 process.start('xscale_par')
                 print('Cluster, %s , %s , %s, %s'%(self.threshold,x, self.anomFlag, counter[x]), file=Log)             
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(self.threshold,x,self.anomFlag), 'a')
-                print('COPY \n RESOLUTION 20 2.0 \n TOLERANCE 4 \n eof', file= Pointless)
+                print('COPY \n  TOLERANCE 4 \n eof', file= Pointless)
                 Pointless.close()
                 #newProcesses.append([self.threshold,x, self.anomFlag])
                 L=[self.threshold,x, self.anomFlag, counter[x]]
