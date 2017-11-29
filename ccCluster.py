@@ -1,4 +1,4 @@
-#! /users/gsantoni/Downloads/cctbx_build/bin/libtbx.python
+#! /usr/bin/env libtbx.python
 from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
@@ -9,7 +9,6 @@ __version__ = "0.2"
 __maintainer__ = "Gianluca Santoni"
 __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
-
 
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt

@@ -264,7 +264,7 @@ class Clustering():
                 P.wait()
                 print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag), 'a')
-                print('COPY \n TOLERANCE 4 \n eof', file= Pointless)
+                print('COPY \n bg\n TOLERANCE 4 \n eof', file= Pointless)
                 Pointless.close()
                 os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(self.threshold,x,self.anomFlag ), st.st_mode | 0o111)              
                 newProcesses.append([thr,x, anomFlag])
