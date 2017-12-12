@@ -1,7 +1,8 @@
 # ccCluster
 
 Welcome to ccCluster
-Developed at the ESRF by Gianluca Santoni
+Developed at the ESRF by Gianluca Santoni.
+gianluca.santoni@esrf.fr
 
 This program is used to run hierarchycal cluster analysis on protein diffraction data.
 When using, please cite:
