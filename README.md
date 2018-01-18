@@ -11,8 +11,9 @@ Santoni, G., Zander, U., Mueller-Dieckmann, C., Leonard, G. & Popov, A. (2017). 
 https://doi.org/10.1107/S1600576717015229.
 
 ## Installation
+Current version of the program does not work with the latest cctbx builds. Drop me an email to get the right one!
 Once downloaded, the program runs if all dependencies are met and if you have libtbx.python in your path.
-You can then add an alias to run the ccCluster.py executable.
+You can then add an alias to run the ccCluster.py executable. 
 
 ## Basic Usage
 ccCluster must receive, the first time you run it for a project, a list of HKL files.
@@ -24,7 +25,7 @@ if no file is specified, it will walk all the subdirectories of the current fold
 
 ## Dependencies are:
 
-PyQt5
+PyQt4
 cctbx
 matplotlib
 numpy
