@@ -1,18 +1,17 @@
 from __future__ import print_function
 
-from iotbx.reflection_file_reader import any_reflection_file
-import cctbx.miller as mil
+#Commented out, disables Minimal for completeness
+#from iotbx.reflection_file_reader import any_reflection_file
+
 from scipy.cluster import hierarchy
-from scipy.spatial import distance
-import sys
 import scipy
 import matplotlib.pyplot as plt
 import os
 import numpy as np
 import subprocess
-import shutil
 import collections
 import operator
+import stat
 
 #parse cc_calc output and perform HCA
 #at each call, it generates the distance matrix
@@ -114,23 +113,10 @@ class Clustering():
 #Funtion added to plot dendrogram in shell mode only.
 #still not funtioninhg
 #Uncomment when will be needed
-    def plotTree( self, pos=None):
-        P = hierarchy.dendrogram(self.Tree, color_threshold=0.3)
-        icoord = scipy.array( P['icoord'] )
-        dcoord = scipy.array( P['dcoord'] )
-        color_list = scipy.array( P['color_list'] )
-        xmin, xmax = icoord.min(), icoord.max()
-        ymin, ymax = dcoord.min(), dcoord.max()
-        if pos:
-            icoord = icoord[pos]
-            ioord = dcoord[pos]
-            color_list = color_list[pos]
-        for xs, ys, color in zip(icoord, dcoord, color_list):
-            plt.plot(xs, ys,  color)
-        plt.xlim( xmin-10, xmax + 0.1*abs(xmax) )
-        plt.ylim( ymin, ymax + 0.1*abs(ymax) )
-        plt.show()
-
+    def createDendrogram(self, thr, pos=None):
+        X = hierarchy.dendrogram(self.Tree, color_threshold=thr)
+        plt.draw()
+        
 
     def thrEstimation(self):
         x = 0.00
@@ -167,49 +153,49 @@ class Clustering():
             counter=collections.Counter(FlatC)
             Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
             
-    def minimalForCompleteness(self):
-        print("Running estimator for minimal threshold for completeness")
-        labels=self.createLabels()
-        x = 0.00
-        dx = 0.05
-        countsList = {}
-        x_list = []
-        while x < 1:
-            Arrays= {}
-            FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
-            counter=collections.Counter(FlatC)
-            Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
-            toProcess=[Best]
-            y=0
-            for cluster, filename in zip(FlatC,labels):
-                if cluster in toProcess:
-                    hklFile = any_reflection_file(filename)
-                    b= hklFile.as_miller_arrays()
-                    for column in b:
-                        if column.is_xray_intensity_array():
-                            Arrays[y]=column
-                            break
-                    y+=1
-            try:
-                Arr = Arrays[0]
-            except:
-                countsList.append(0)
-            for label in range(1, y):
-                try:
-                    Arr = Arr.concatenate(Arrays[label])
-                except:
-                    pass
-            countsList[x]=(Arr.completeness())
-            x+= dx
-       # return minimal for max
-        L = []
-        for key in countsList:
-            if countsList[key]>0.98:
-                L.append(key)
-        L.sort()
-        return L[0]
+    # def minimalForCompleteness(self):
+    #     print("Running estimator for minimal threshold for completeness")
+    #     labels=self.createLabels()
+    #     x = 0.00
+    #     dx = 0.05
+    #     countsList = {}
+    #     x_list = []
+    #     while x < 1:
+    #         Arrays= {}
+    #         FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
+    #         counter=collections.Counter(FlatC)
+    #         Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+    #         toProcess=[Best]
+    #         y=0
+    #         for cluster, filename in zip(FlatC,labels):
+    #             if cluster in toProcess:
+    #                 hklFile = any_reflection_file(filename)
+    #                 b= hklFile.as_miller_arrays()
+    #                 for column in b:
+    #                     if column.is_xray_intensity_array():
+    #                         Arrays[y]=column
+    #                         break
+    #                 y+=1
+    #         try:
+    #             Arr = Arrays[0]
+    #         except:
+    #             countsList.append(0)
+    #         for label in range(1, y):
+    #             try:
+    #                 Arr = Arr.concatenate(Arrays[label])
+    #             except:
+    #                 pass
+    #         countsList[x]=(Arr.completeness())
+    #         x+= dx
+    #    # return minimal for max
+    #     L = []
+    #     for key in countsList:
+    #         if countsList[key]>0.98:
+    #             L.append(key)
+    #     L.sort()
+    #     return L[0]
 
-        
+      
     def merge(self, anomFlag, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         Log = open(self.CurrentDir+'/.cc_cluster.log', 'a')
@@ -259,14 +245,16 @@ class Clustering():
         newProcesses=[]
         for x in ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
+                self.createDendrogram(thr)
                 plt.savefig(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr),x,anomFlag))
-                P= subprocess.Popen('/opt/pxsoft/xds/vdefault/linux-x86_64/xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
+                P= subprocess.Popen('xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
                 P.wait()
                 print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag), 'a')
                 print('COPY \n bg\n TOLERANCE 4 \n eof', file= Pointless)
                 Pointless.close()
-                os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(self.threshold,x,self.anomFlag ), st.st_mode | 0o111)              
+                st = os.stat(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ))
+                os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)              
                 newProcesses.append([thr,x, anomFlag])
 
 def main():

@@ -17,8 +17,8 @@ from pathos.multiprocessing import ProcessingPool as Pool
 #Load files and create arrays
 #
 ######
-
-
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", dest="HKLlist", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
 
 #Class to calc correlation on all data in tree of subfolders
 class ccCalc():

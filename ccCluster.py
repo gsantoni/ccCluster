@@ -1,4 +1,4 @@
-#! /usr/bin/env libtbx.python
+#! /usr/bin/env python
 from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
@@ -10,46 +10,48 @@ __maintainer__ = "Gianluca Santoni"
 __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
+
+
+
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('/usr/lib/python2.7/dist-packages/')
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
 
 
 # implement the default mpl key bindings
-from matplotlib.figure import Figure
 from scipy.cluster import hierarchy
-from scipy.spatial import distance
 import collections
 import operator
-import sys
+
 
 from time import sleep
 import os
-import numpy as np
 
 
 from resultsTab import resultsTab
 from summary import resultsSummary
 from clustering import Clustering
-import CalcClass
+#import CalcClass
 
 # Insert parse  to change the file path from command line
 
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i","--XSCALEfile", dest="XSCALEfile", default=None, help="XSCALE.LP from overall processing")
+parser.add_argument("-i","--DISTfile", dest="DISTfile", default=None, help="Distance file from ccCalc module")
 parser.add_argument("-o","--outname", dest="outname", default='Dendrogram', help="output dendogram file name")
 parser.add_argument("-t", "--threshold", dest="threshold", help="Distance threshold for clustering")
-parser.add_argument("-p", "--shell",action="store_true", dest="shell", default=False, help="Launch program in shell mode. Need to specify the threshold value")
+parser.add_argument("-p", "--process",action="store_true", dest="shell", default=False, help="Launch program in shell mode. Need to specify the threshold value")
 parser.add_argument("-c", "--count",action="store_true", dest="count", default=False, help="Counts datasets in the biggest cluster and exit")
 parser.add_argument("-e", "--estimation",action="store_true", dest="est", default=False, help="Tries to guess an optimal threshold value")
-parser.add_argument("-f", dest="HKLlist", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
-#Minimal for completeness
-parser.add_argument("-m", dest="minimal", default= False , action="store_true" , help='Gives minimal threshold for completeness')
 parser.add_argument("-u", dest="cell", default= False , action="store_true" , help='Unit cell based clustering. requires list of input files')
+#Minimal for completeness is currently broken
+#parser.add_argument("-m", dest="minimal", default= False , action="store_true" , help='Gives minimal threshold for completeness')
+
 
 #parser.print_help()
 args= parser.parse_args()
@@ -73,24 +75,30 @@ G. Santoni and A. Popov, 2015
 """)
 
 
+#this part is commented out to separate ccCluster from ccCalc
+# if args.DISTfile is None:
+#     if args.HKLlist is None:
+#         print('No input specified, calculating Correlation coefficients')
+#         print('this might take a while')
+#         CalcClass.ccCalc()
+#         correlationFile='ccClusterLog.txt'
+#     elif args.cell:
+#         print("Calculating unit cell distance between specified files")
+#         CalcClass.cellList(args.HKLlist)
+#         correlationFile='ccClusterLog.txt'
+#     else:
+#         print("Calculating CC between specified files")
+#         CalcClass.ccList(args.HKLlist)
+#         correlationFile='ccClusterLog.txt'
+# else:
+#     correlationFile=args.DISTfile
 
-if args.XSCALEfile is None:
-    if args.HKLlist is None:
-        print('No input specified, calculating Correlation coefficients')
-        print('this might take a while')
-        CalcClass.ccCalc()
-        correlationFile='ccClusterLog.txt'
-    elif args.cell:
-        print("Calculating unit cell distance between specified files")
-        CalcClass.cellList(args.HKLlist)
-        correlationFile='ccClusterLog.txt'
-    else:
-        print("Calculating CC between specified files")
-        CalcClass.ccList(args.HKLlist)
-        correlationFile='ccClusterLog.txt'
+
+#Suggest to run ccCalc if no correlation file is provided
+if args.DISTfile is None:
+    print('no inputs specified, please run ccCalc before')
 else:
-    correlationFile=args.XSCALEfile
-
+    correlationFile=args.DISTfile
 
 
 CC = Clustering(correlationFile)
@@ -368,14 +376,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 def main():
     if args.threshold:
         threshold = args.threshold
-    elif args.minimal:
-        threshold = CC.minimalForCompleteness()
     else:
         threshold= CC.thrEstimation()
 
     if args.shell:
-        CC.checkMultiplicity(threshold) 
-        CC.merge('no_ano',threshold)
+        CC.checkMultiplicity(threshold)
+        CC.merge('ano',threshold)
     elif args.count:
         CC.checkMultiplicity(threshold)
     elif args.est:
