@@ -11,14 +11,12 @@ import argparse
 import struct
 import os
 import multiprocessing
-from pathos.multiprocessing import ProcessingPool as Pool
+#from pathos.multiprocessing import ProcessingPool as Pool
 
 ###
 #Load files and create arrays
 #
 ######
-parser = argparse.ArgumentParser()
-parser.add_argument("-f", dest="HKLlist", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
 
 #Class to calc correlation on all data in tree of subfolders
 class ccCalc():
@@ -271,45 +269,61 @@ class cellList():
 
 
 def main():
+
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("structures", type=str, nargs='+', help='The list of refined structures to merge')
-    parser.add_argument("-o","--outname", dest="outname", default=None, help="output dendogram file name")
-    parser.add_argument("-c","--cell", dest='compl' , action='store_true', default=False, help="Uses unit cell params instead of cc for clustering")
-    parser.add_argument("-u", "--uli", dest='uli',action='store_true', default=False)
-
+    parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
+    parser.add_argument("-u", dest="cell", default= False , action="store_true" , help='Unit cell based clustering. requires list of input files')
     args= parser.parse_args()
 
-    HKLarrays = ccCalc.loadReflections(args.structures)
+    #HKLarrays = ccCalc.loadReflections(args.structures)
 
 
     CurrentDir= os.getcwd()
-    if args.outname:
-        LogFile= open(args.outname, 'w')
-    elif args.compl:
-        LogFile= open('CellClusterLog.txt', 'w')
+    if args.structures is None:
+        print('No input specified, calculating Correlation coefficients')
+        print('this might take a while')
+        ccCalc()
+        correlationFile='ccClusterLog.txt'
+    elif args.cell:
+        print("Calculating unit cell distance between specified files")
+        cellList(args.structures)
+        correlationFile='ccClusterLog.txt'
     else:
-        LogFile= open('ccClusterLog.txt', 'w')
-    proc = multiprocessing.Pool(processes=8)
-    print('Read all input files')
-
-    if args.compl:
-        a, b, cc = zip(*proc.map(cellPrint, itertools.combinations(HKLarrays, 2)))
-        print('Done!')
-    else:
-        a, b, cc = zip(*proc.map(ccPrint, itertools.combinations(HKLarrays, 2)))
-        print('Done!')
-
-    #Printing output file
-    print('Labels', file=LogFile)
-    for n in enumerate(args.structures):
-        print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=LogFile)
+        print("Calculating CC between specified files")
+        ccList(args.structures)
+        correlationFile='ccClusterLog.txt'
 
 
-    print('Correlation coefficients', file=LogFile)
-    print(a)
-    for L in zip(a, b, cc):
-        print('%s   %s   %s'%(L[0], L[1], L[2]), file=LogFile)
+"""Region commented out from older version.
+Check that everything is still running
+
+"""
+    # if args.outname:
+    #     LogFile= open(args.outname, 'w')
+    # elif args.compl:
+    #     LogFile= open('CellClusterLog.txt', 'w')
+    # else:
+    #     LogFile= open('ccClusterLog.txt', 'w')
+    # proc = multiprocessing.Pool(processes=8)
+    # print('Read all input files')
+
+    # if args.compl:
+    #     a, b, cc = zip(*proc.map(cellPrint, itertools.combinations(HKLarrays, 2)))
+    #     print('Done!')
+    # else:
+    #     a, b, cc = zip(*proc.map(ccPrint, itertools.combinations(HKLarrays, 2)))
+    #     print('Done!')
+
+    # #Printing output file
+    # print('Labels', file=LogFile)
+    # for n in enumerate(args.structures):
+    #     print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=LogFile)
+
+
+    # print('Correlation coefficients', file=LogFile)
+    # print(a)
+    # for L in zip(a, b, cc):
+    #     print('%s   %s   %s'%(L[0], L[1], L[2]), file=LogFile)
 
 if __name__== '__main__':
     main()
