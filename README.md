@@ -14,7 +14,7 @@ https://doi.org/10.1107/S1600576717015229.
 ## Installation
 After extracting the archive downloaded from github, add the folder to your path:
 
-export PATH=/path/to/ccCluster/folder/$PATH
+export PATH=/path/to/ccCluster/folder/:$PATH
 (add this to your bash_profile)
 
 ## Basic Usage
