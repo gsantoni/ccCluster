@@ -11,10 +11,10 @@ When using, please cite:
 Santoni, G., Zander, U., Mueller-Dieckmann, C., Leonard, G. & Popov, A. (2017). J. Appl. Cryst. 50,
 https://doi.org/10.1107/S1600576717015229.
 
-##Intallation
+## Installation
 After extracting the archive downloaded from github, add the folder to your path:
 
-export PATH=/path/to/ccCluster/folder/$PATH
+export PATH=/path/to/ccCluster/folder/:$PATH
 (add this to your bash_profile)
 
 ## Basic Usage
@@ -32,7 +32,10 @@ ccCluster -i ccClusterLog.txt
 ## Dependencies are:
 
 PyQt4
+
 cctbx (check that libtbx.python is in your path)
+
 matplotlib
+
 numpy
 
