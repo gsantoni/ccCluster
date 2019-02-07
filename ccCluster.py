@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
-__copyright__ = "Copyright 2015"
+__copyright__ = "Copyright 20150-2018"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
 __license__ = ""
 __version__ = "0.2"
