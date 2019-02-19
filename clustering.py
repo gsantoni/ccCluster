@@ -114,8 +114,19 @@ class Clustering():
     def createDendrogram(self, thr, pos=None):
         X = hierarchy.dendrogram(self.Tree, color_threshold=thr)
         plt.draw()
-        
 
+#Function to return flat cluster to a text file
+#will be included in the output folder for the cluster
+
+    def flatClusterPrinter(self, thr, labelsList, anomFlag):
+        FlatC=hierarchy.fcluster(self.Tree, thr, criterion='distance')
+        counter=collections.Counter(FlatC)
+        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        clusterFile= open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.txt'%(float(thr),Best, anomFlag), 'a')
+        for hkl, cluster in zip(FlatC, labelsList):
+            print(hkl, cluster, file=clusterFile)
+
+        
     def thrEstimation(self):
         x = 0.00
         dx = 0.05
@@ -255,6 +266,8 @@ class Clustering():
                 os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)              
                 newProcesses.append([thr,x, anomFlag])
 
+
+                
 def main():
     from optparse import OptionParser
     parser = OptionParser(usage="%prog --XSCALEfile=<LP filename> --outname=<output dendogram>")
