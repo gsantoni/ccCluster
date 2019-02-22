@@ -1,8 +1,5 @@
 from __future__ import print_function
 
-#Commented out, disables Minimal for completeness
-#from iotbx.reflection_file_reader import any_reflection_file
-
 from scipy.cluster import hierarchy
 import scipy
 import matplotlib.pyplot as plt
@@ -12,6 +9,7 @@ import subprocess
 import collections
 import operator
 import stat
+import json
 
 #parse cc_calc output and perform HCA
 #at each call, it generates the distance matrix
@@ -121,10 +119,20 @@ class Clustering():
     def flatClusterPrinter(self, thr, labelsList, anomFlag):
         FlatC=hierarchy.fcluster(self.Tree, thr, criterion='distance')
         counter=collections.Counter(FlatC)
+        clusterToJson={}
+        clusterToJson['HKL']=[]
         Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
         clusterFile= open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.txt'%(float(thr),Best, anomFlag), 'a')
-        for hkl, cluster in zip(FlatC, labelsList):
-            print(hkl, cluster, file=clusterFile)
+        for cluster, hkl in zip(FlatC, labelsList):
+            clusterToJson['HKL'].append({
+                'input_file':hkl,
+                'cluster':str(cluster)
+                })
+        print(clusterToJson)
+        with open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.json'%(float(thr),Best, anomFlag), 'w') as fp:
+            json.dump(clusterToJson, fp)
+
+                
 
         
     def thrEstimation(self):
