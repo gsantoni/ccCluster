@@ -2,10 +2,10 @@
 from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
-__copyright__ = "Copyright 20150-2018"
+__copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
 __license__ = ""
-__version__ = "0.2"
+__version__ = "0.3"
 __maintainer__ = "Gianluca Santoni"
 __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
@@ -13,24 +13,17 @@ __status__ = "Beta"
 
 
 
-#from PyQt4 import QtGui, QtCore
+
 import matplotlib.pyplot as plt
 import sys
 sys.path.append('/usr/lib/python2.7/dist-packages/')
-#from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-#from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
-
-
-
-# implement the default mpl key bindings
 from scipy.cluster import hierarchy
 import collections
 import operator
-
-
 from time import sleep
 import os
 
+#import ccCluster classes
 
 from resultsTab import resultsTab
 from summary import resultsSummary
@@ -75,25 +68,6 @@ G. Santoni and A. Popov, 2015
 """)
 
 
-#this part is commented out to separate ccCluster from ccCalc
-# if args.DISTfile is None:
-#     if args.HKLlist is None:
-#         print('No input specified, calculating Correlation coefficients')
-#         print('this might take a while')
-#         CalcClass.ccCalc()
-#         correlationFile='ccClusterLog.txt'
-#     elif args.cell:
-#         print("Calculating unit cell distance between specified files")
-#         CalcClass.cellList(args.HKLlist)
-#         correlationFile='ccClusterLog.txt'
-#     else:
-#         print("Calculating CC between specified files")
-#         CalcClass.ccList(args.HKLlist)
-#         correlationFile='ccClusterLog.txt'
-# else:
-#     correlationFile=args.DISTfile
-
-
 #Suggest to run ccCalc if no correlation file is provided
 if args.DISTfile is None:
     print('no inputs specified, please run ccCalc before')
@@ -113,7 +87,7 @@ threshold = CC.thrEstimation()
 # #with the different options, we can chose 
 # # to process through the shell,
 # #count the multiplicity of the highest cluster
-# #run the interface
+
 
 def main():
     if args.threshold:
@@ -130,11 +104,5 @@ def main():
     elif args.est:
         a = CC.thrEstimation()
         print(a)
-    # else:
-    #     app = QtGui.QApplication(sys.argv)
-    #     ex = MainWindow()
-    #     ex.show()
-    #     sys.exit(app.exec_())      
-
 if __name__== '__main__':
     main()
