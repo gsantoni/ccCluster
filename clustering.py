@@ -10,6 +10,7 @@ import collections
 import operator
 import stat
 import json
+import random
 
 #parse cc_calc output and perform HCA
 #at each call, it generates the distance matrix
@@ -226,6 +227,46 @@ class Clustering():
                 os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)              
                 newProcesses.append([thr,x, anomFlag])
 
+
+# A function to investigate the influence of reference file in merging results
+                
+    def shuffleXscale(self, anomFlag, thr):
+        FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
+        Log = open(self.CurrentDir+'/.cc_cluster.log', 'a')
+        counter=collections.Counter(FlatC)
+        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        print(Best)
+        Process = True
+        xscaleInputFiles=[]
+#change checkboxes to standard variables
+        if Process:
+            ToProcess = [Best]    
+        else:
+            ToProcess = set(Clusters)
+            for key in ToProcess:
+                if counter[key]==1:
+                    ToProcess = [x for x in ToProcess if x != key]
+#Prepare list of filenames to shuffle over
+        for cluster, filename in zip(FlatC, self.labelList):
+            if cluster in ToProcess:
+                xscaleInputFiles.append(filename)
+        print(xscaleInputFiles)
+#run XSCALE with random ordered files 20 times
+        for x in range(0,20):
+            os.mkdir(self.CurrentDir+'/thr_%.2f_run_%s'%(float(thr),x))
+            Xscale=open(self.CurrentDir+'/thr_%.2f_run_%s/XSCALE.INP'%(float(thr),x), 'a')
+            print('OUTPUT_FILE=scaled.hkl',file=Xscale)
+            print('MERGE= TRUE', file=Xscale)
+            print('FRIEDEL\'S_LAW=TRUE', file=Xscale )
+            random.shuffle(xscaleInputFiles)
+            for hkl in xscaleInputFiles:
+                print ('INPUT_FILE= ../%s'%(hkl), file=Xscale)
+                print ('MINIMUM_I/SIGMA= 0', file=Xscale)        
+            P= subprocess.Popen('xscale_par',cwd=self.CurrentDir+'/thr_%.2f_run_%s'%(float(thr),x))     
+            P.wait()
+   
+        
+                        
 
                 
 def main():

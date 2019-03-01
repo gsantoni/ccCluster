@@ -38,6 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i","--DISTfile", dest="DISTfile", default=None, help="Distance file from ccCalc module")
 parser.add_argument("-o","--outname", dest="outname", default='Dendrogram', help="output dendogram file name")
 parser.add_argument("-t", "--threshold", dest="threshold", help="Distance threshold for clustering")
+parser.add_argument("-s", "--shuffle", dest="shuffle",action="store_true",default=False, help="Activates the XSCALE Shuffle function")
 parser.add_argument("-p", "--process",action="store_true", dest="shell", default=False, help="Launch program in shell mode. Need to specify the threshold value")
 parser.add_argument("-c", "--count",action="store_true", dest="count", default=False, help="Counts datasets in the biggest cluster and exit")
 parser.add_argument("-e", "--estimation",action="store_true", dest="est", default=False, help="Tries to guess an optimal threshold value")
@@ -104,5 +105,7 @@ def main():
     elif args.est:
         a = CC.thrEstimation()
         print(a)
+    elif args.shuffle:
+        CC.shuffleXscale('ano',threshold)
 if __name__== '__main__':
     main()
