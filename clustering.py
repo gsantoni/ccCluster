@@ -19,7 +19,6 @@ class Clustering():
     def __init__(self, ccCalcOutput):
         self.ccFile= ccCalcOutput
         self.CurrentDir = os.getcwd()
-        #run parser
         self.ccTable, self.Dimension = self.parseCCFile()
         self.createLabels()
         self.previousProcess()
@@ -65,6 +64,7 @@ class Clustering():
         
 
 #changed, now the distance is defined directly by ccCalc
+#uses the complete linkage method
     def tree(self):
         data = self.ccTable
         Matrix=np.zeros((self.Dimension,self.Dimension))
@@ -83,10 +83,10 @@ class Clustering():
 
         Distances = np.array(reducedArray, dtype=(float))
         self.Tree =hierarchy.linkage(Distances, 'complete')
-
         return self.Tree
 
-#new function, chose the average linkage
+#Perform HCA with the average linkage method
+#this is the defalut use from the main program ccCluster
     def avgTree(self):
         data = self.ccTable
         Matrix=np.zeros((self.Dimension,self.Dimension))
@@ -121,18 +121,17 @@ class Clustering():
         counter=collections.Counter(FlatC)
         clusterToJson={}
         clusterToJson['HKL']=[]
+        clusterFile =  open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.json'%(float(thr),Best, anomFlag), 'w')        
         Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
-        clusterFile= open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.txt'%(float(thr),Best, anomFlag), 'a')
         for cluster, hkl in zip(FlatC, labelsList):
             clusterToJson['HKL'].append({
                 'input_file':hkl,
                 'cluster':str(cluster)
                 })
         print(clusterToJson)
-        with open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.json'%(float(thr),Best, anomFlag), 'w') as fp:
-            json.dump(clusterToJson, fp)
-
-                
+        j = json.dumps(clusterToJson, indent=4)
+        print(j, file=clusterFile)
+        
 
         
     def thrEstimation(self):
@@ -169,49 +168,8 @@ class Clustering():
             FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
             counter=collections.Counter(FlatC)
             Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
-            
-    # def minimalForCompleteness(self):
-    #     print("Running estimator for minimal threshold for completeness")
-    #     labels=self.createLabels()
-    #     x = 0.00
-    #     dx = 0.05
-    #     countsList = {}
-    #     x_list = []
-    #     while x < 1:
-    #         Arrays= {}
-    #         FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
-    #         counter=collections.Counter(FlatC)
-    #         Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
-    #         toProcess=[Best]
-    #         y=0
-    #         for cluster, filename in zip(FlatC,labels):
-    #             if cluster in toProcess:
-    #                 hklFile = any_reflection_file(filename)
-    #                 b= hklFile.as_miller_arrays()
-    #                 for column in b:
-    #                     if column.is_xray_intensity_array():
-    #                         Arrays[y]=column
-    #                         break
-    #                 y+=1
-    #         try:
-    #             Arr = Arrays[0]
-    #         except:
-    #             countsList.append(0)
-    #         for label in range(1, y):
-    #             try:
-    #                 Arr = Arr.concatenate(Arrays[label])
-    #             except:
-    #                 pass
-    #         countsList[x]=(Arr.completeness())
-    #         x+= dx
-    #    # return minimal for max
-    #     L = []
-    #     for key in countsList:
-    #         if countsList[key]>0.98:
-    #             L.append(key)
-    #     L.sort()
-    #     return L[0]
 
+#Run XSCALE to merge the biggest cluster
       
     def merge(self, anomFlag, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
@@ -227,11 +185,6 @@ class Clustering():
             for key in ToProcess:
                 if counter[key]==1:
                     ToProcess = [x for x in ToProcess if x != key]
-
-
-
-#Processing pipeline, 
-#Does all the XSCALE run
         for x in ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
                 os.mkdir(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s'%(float(thr),x, anomFlag))
@@ -257,7 +210,6 @@ class Clustering():
                 print ('XDSIN ../%s'%(filename), file= Pointless)
                 OUT.close()
                 Pointless.close()
-        #optional run of XSCALE
 
         newProcesses=[]
         for x in ToProcess:
