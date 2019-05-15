@@ -368,6 +368,88 @@ class cellList():
             print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
 
 
+#function to define a distance based on common reflections
+
+class commonList():
+    def __init__(self, Arglist):
+        self.LogFile=open('Common.txt', 'w')
+        self.CurrentDir= os.getcwd()
+        self.argList= Arglist
+        self.Arrays= self.loadReflections()
+        self.results = self.calcSerial()
+
+
+        
+    def loadReflections(self):
+        Arrays = {}
+        for x in self.argList:
+            if reader.is_integrate_hkl_file(x):
+                Arrays[x]= reader().as_miller_arrays(x)
+            else:
+                hklFile = any_reflection_file(x)
+                Arrays[x]= hklFile.as_miller_arrays()
+            print('File %s has been loaded'%(x))
+            #Printing output file
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
+        return Arrays
+
+    def writeLog(self):
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
+        print('Correlation coefficients', file=self.LogFile)
+        for L in self.results:
+            print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
+
+    def ccPrint(self,  arglist):
+        Array1 = self.Arrays[arglist[0]]
+        Array2 = self.Arrays[arglist[1]]
+
+        gen1 = (i for i,F in enumerate(self.argList) if F == arglist[0])
+        gen2 = (i for i,F in enumerate(self.argList) if F == arglist[1])
+
+        for x in Array1:
+            if x.is_xray_intensity_array():
+                I_obs1=x
+                break
+        for x in Array2:
+            if x.is_xray_intensity_array():
+                I_obs2=x
+                break
+
+        # I_obs1 = Array1[3]
+        # I_obs2 = Array2[3]
+        # #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
+
+
+        #print I_obs1.correlation(I_obs2, use_binning=False).coefficient()
+
+        I_ext1= I_obs1.generate_bijvoet_mates()
+        I_ext2= I_obs2.generate_bijvoet_mates()
+        try:
+            ExtCommon1, ExtCommon2 = I_ext1.common_sets(I_ext2, assert_is_similar_symmetry= True)
+            common= ExtCommon1.size()
+            print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))
+        except:
+            common=0
+            print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))         
+        return gen1.next(), gen2.next(), 1000/common
+
+    def calcSerial(self):
+        print('Correlation coefficients', file=self.LogFile)
+        for x in itertools.combinations(self.Arrays, 2):
+            a, b, cc = self.ccPrint(x)
+            print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
+
+    def calcAll(self):
+        proc = Pool(4)
+        a, b, cc = zip(*proc.map(self.ccPrint, itertools.combinations(self.Arrays, 2)))
+        L = zip(a, b, cc)
+        return L
+
+
 
 
 def main():
@@ -375,6 +457,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
     parser.add_argument("-u", dest="cell", default= False , action="store_true" , help='Unit cell based clustering. requires list of input files')
+    parser.add_argument("-c", dest="common", default= False , action="store_true" , help='Experimental class based on common reflections only')
     args= parser.parse_args()
 
     #HKLarrays = ccCalc.loadReflections(args.structures)
@@ -395,7 +478,11 @@ def main():
     elif args.cell:
         print("Calculating unit cell distance between specified files")
         cellList(args.structures)
-        correlationFile='ccClusterLog.txt'
+        correlationFile='cellClusterLog.txt'
+    elif args.common :
+        print('Warning! I am using the experimental common reflections feature!')
+        commonList(args.structures)
+        correlationFile='Common.txt'
     else:
         print("Calculating CC between specified files")
         ccList(args.structures)
