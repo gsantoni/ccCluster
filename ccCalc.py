@@ -368,7 +368,95 @@ class cellList():
             print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
 
 
+
+class blendList():
+"""
+Uses unit cell but with the distance definition from Blend.
+Linear coherent variation, i.e. the unit cell biggest diaognal change
+"""
+    def __init__(self, Arglist):
+        self.LogFile=open('cellClusterLog.txt', 'w')
+        self.CurrentDir= os.getcwd()
+        self.argList= Arglist
+        self.Arrays= self.loadReflections()
+        self.results = self.cellSerial()
+
+
+        
+    def loadReflections(self):
+        Arrays = {}
+        for x in self.argList:
+            if reader.is_integrate_hkl_file(x):
+                Arrays[x]= reader().as_miller_arrays(x)
+            else:
+                hklFile = any_reflection_file(x)
+                Arrays[x]= hklFile.as_miller_arrays()
+            print('File %s has been loaded'%(x))
+            #Printing output file
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
+        return Arrays
+
+    def writeLog(self):
+        print('Labels', file=self.LogFile)
+        for n in enumerate(self.argList):
+            print('INPUT_FILE: %s   %s'%(n[0], n[1]),file=self.LogFile)
+        print('Correlation coefficients', file=self.LogFile)
+        for L in self.results:
+            print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
+'''
+Including a definition of distance à la Blend
+Calculate diagonals and find the maximum variation of those.
+Angle is converted to degrees beforehand
+'''
+    def diagonalCell(self, a, b, angle):
+        cosArgument= radians(180-angle)
+        diag = sqrt(a**2+b**2-2*a*b*cos(cosArgument))
+        return diag
+    
+    def blendLCV(self, arglist):
+        Array1 = self.Arrays[arglist[0]]
+        Array2 = self.Arrays[arglist[1]]
+
+        gen1 = (i for i,F in enumerate(self.argList) if F == arglist[0])
+        gen2 = (i for i,F in enumerate(self.argList) if F == arglist[1])
+
+        b1 = Array1
+        b2 = Array2
+
+        I_obs1 = b1[0]
+        I_obs2 = b2[0]
+        #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
+        uc1 = I_obs1.unit_cell().parameters()
+        uc2 = I_obs2.unit_cell().parameters()
+        a1, b1, c1, al1, be1, ga1 = uc1[0], uc1[1], uc1[2], uc[3], uc[4] , uc[5]
+        a2, b2, c2, al2, be2, ga2 = uc2[0], uc2[1], uc2[2], uc[3], uc[4] , uc[5]
+        #calculate the 3 diagonals for each crystal
+
+        1diag1 = self.diagonalCell(a1, b1, ga1)
+        1diag2 = self.diagonalCell(b1, c1, al1)
+        1diag3 = self.diagonalCell(c1, a1, be1)
+
+        2diag1 = self.diagonalCell(a2, b2, ga2)
+        2diag2 = self.diagonalCell(a2, b2, ga2)
+        2diag3 = self.diagonalCell(a2, b2, ga2)        
+
+        #Calculate the LCV
+        LCV = [fabs(1diag1-2diag1)/min(1diag1,2diag1),
+               fabs(1diag2-2diag2)/min(1diag2,2diag2),
+               fabs(1diag3-2diag3)/min(1diag3, 2diag2)]
+        return gen1.next(), gen2.next(), max(LCV)
+
+    def cellSerial(self):
+        print('Correlation coefficients', file=self.LogFile)
+        for x in itertools.combinations(self.Arrays, 2):
+            a, b, cc = self.blendLCV(x)
+            print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
+
+
 #function to define a distance based on common reflections
+#will also give information to chose reference for scaling
 
 class commonList():
     def __init__(self, Arglist):
