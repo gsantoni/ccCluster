@@ -170,9 +170,31 @@ class Clustering():
             counter=collections.Counter(FlatC)
             Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
 
+
+# the list ToProcess is needed by the scaling routines
+# fix all this new mess!
+    def whatToProcess(self):
+        FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')        
+        counter=collections.Counter(FlatC)
+        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Process = True
+        #change checkboxes to standard variables
+        if Process:
+            ToProcess = [Best]    
+        else:
+            ToProcess = set(Clusters)
+            for key in ToProcess:
+                if counter[key]==1:
+                    ToProcess = [x for x in ToProcess if x != key]
+        return ToProcess
+
+
 #Run XSCALE to merge the biggest cluster
-      
-    def merge(self, anomFlag, thr):
+#input files
+#!!!! Will need to define the processes to run externally
+#renaming function! Edit the calls in ccCluster accordingly
+                    
+    def prepareScaling(self, anomFlag, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         Log = open(self.CurrentDir+'/.cc_cluster.log', 'a')
         counter=collections.Counter(FlatC)
@@ -212,6 +234,9 @@ class Clustering():
                 OUT.close()
                 Pointless.close()
 
+#Run XSCALE in the pre-determined folders.
+
+    def scaleAndMerge(self, anomFlag, thr):
         newProcesses=[]
         for x in ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
@@ -220,13 +245,20 @@ class Clustering():
                 P= subprocess.Popen('xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
                 P.wait()
                 print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
+                newProcesses.append([thr,x, anomFlag])
+
+#run Pointless in each folder from the processing List
+    def pointlessRun(self, anomFlag, thr):
+        newProcesses=[]
+        for x in ToProcess:
+            if [thr,x, anomFlag] not in  self.alreadyDone:
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag), 'a')
                 print('COPY \n bg\n TOLERANCE 4 \n eof', file= Pointless)
                 Pointless.close()
                 st = os.stat(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ))
-                os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)              
-                newProcesses.append([thr,x, anomFlag])
-
+                os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)       
+                P = subprocess.Popen(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh')
+                P.wait()
 
 # A function to investigate the influence of reference file in merging results
                 
