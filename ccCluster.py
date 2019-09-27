@@ -16,7 +16,7 @@ __status__ = "Beta"
 
 import matplotlib.pyplot as plt
 import sys
-sys.path.append('/usr/lib/python2.7/dist-packages/')
+#sys.path.append('/usr/lib/python2.7/dist-packages/')
 from scipy.cluster import hierarchy
 import collections
 import operator
@@ -98,7 +98,8 @@ def main():
 
     if args.shell:
         CC.checkMultiplicity(threshold)
-        CC.merge('ano',threshold)
+        CC.prepareScaling('ano',threshold)
+        CC.scaleAndMerge('ano',threshold)
         CC.flatClusterPrinter(threshold, etiquets, 'ano')        
     elif args.count:
         CC.checkMultiplicity(threshold)

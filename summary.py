@@ -24,7 +24,7 @@ class resultsSummary(QtGui.QWidget):
         generateLogSummary(self.Workdir+'/.cc_cluster.log')
         text = open(self.Workdir+'/.cc_summary.txt').read()
         self.resultSummary.setPlainText(text)
-        print text
+        print(text)
 
 def main():
 #Can be launched alone to viasualize the results

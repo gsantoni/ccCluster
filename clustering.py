@@ -110,6 +110,7 @@ class Clustering():
 #Funtion added to plot dendrogram in shell mode only.
 #still not funtioninhg
 #Uncomment when will be needed
+
     def createDendrogram(self, thr, pos=None):
         X = hierarchy.dendrogram(self.Tree, color_threshold=thr)
         plt.draw()
