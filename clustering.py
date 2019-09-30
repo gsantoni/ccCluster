@@ -124,7 +124,7 @@ class Clustering():
         clusterToJson={}
         clusterToJson['HKL']=[]
         clusterFile =  open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.json'%(float(thr),Best, anomFlag), 'w')        
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
         for cluster, hkl in zip(FlatC, labelsList):
             clusterToJson['HKL'].append({
                 'input_file':hkl,
@@ -145,7 +145,7 @@ class Clustering():
             
             FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
             counter=collections.Counter(FlatC)
-            Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+            Best = max(counter.items(), key=operator.itemgetter(1))[0]
             countsList.append(counter[Best])        
             x+= dx
             x_list.append(x)
@@ -158,7 +158,7 @@ class Clustering():
     def checkMultiplicity(self, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         counter=collections.Counter(FlatC)
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
         print('You are clustering with a threshold of %s'%(thr))
         print('The biggest cluster contains %s datasets from a total of %s'%(counter[Best], len(self.labelList)))
 

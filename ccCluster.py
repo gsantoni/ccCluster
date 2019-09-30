@@ -22,7 +22,7 @@ import collections
 import operator
 from time import sleep
 import os
-
+import subprocess
 #import ccCluster classes
 
 from resultsTab import resultsTab
@@ -36,6 +36,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i","--DISTfile", dest="DISTfile", default=None, help="Distance file from ccCalc module")
+parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
 parser.add_argument("-o","--outname", dest="outname", default='Dendrogram', help="output dendogram file name")
 parser.add_argument("-t", "--threshold", dest="threshold", help="Distance threshold for clustering")
 parser.add_argument("-s", "--shuffle", dest="shuffle",action="store_true",default=False, help="Activates the XSCALE Shuffle function")
@@ -76,13 +77,25 @@ else:
     correlationFile=args.DISTfile
 
 
+##
+#Call to ccCalc if no distances founf but files listed
+
+# if args.DISTfile is None: 
+#     if args.structures is None:
+#         print('no inputs specified, please run ccCalc before')
+#     else:
+#         #Run ccCalc with initial args list
+#         C = subprocess.Popen('ccCalc -f %s'%(args.structures), cwd=os.getcwd())
+#         correlationFile=('ccCluster_log.txt')
+# else:
+#     correlationFile=args.DISTfile
+
+
+
 CC = Clustering(correlationFile)
 Tree = CC.avgTree()
 etiquets=CC.createLabels()
 threshold = CC.thrEstimation()
-
-
-
 
 # #Main part of the program
 # #with the different options, we can chose 
