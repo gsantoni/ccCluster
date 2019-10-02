@@ -86,8 +86,9 @@ if args.DISTfile is None:
         exit()
     else:
         #Run ccCalc with initial args list
-        #C = subprocess.Popen('ccCalc -f %s'%(args.structures), cwd=os.getcwd())
-        C = subprocess.Popen('/opt/pxsoft/bin/ccCalc', '-h',cwd=os.getcwd())
+        hklin = " ".join(str(x) for x in args.structures)
+        C = subprocess.Popen('ccCalc -f %s'%(hklin), cwd=os.getcwd())
+        #C = subprocess.Popen('/opt/pxsoft/bin/ccCalc', '-h',cwd=os.getcwd())
         correlationFile=('ccCluster_log.txt')
 else:
     correlationFile=args.DISTfile
