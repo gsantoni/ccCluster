@@ -54,7 +54,7 @@ args= parser.parse_args()
 #Startup message
 
 print("""ccCluster - HCA for protein crystallography 
-G. Santoni and A. Popov, 2015
+G. Santoni and A. Popov, 2015-2019
               v .   ._, |_  .,
            `-._\/  .  \ /    |/_
                \\  _\, y | \//
@@ -71,24 +71,26 @@ G. Santoni and A. Popov, 2015
 
 
 #Suggest to run ccCalc if no correlation file is provided
-if args.DISTfile is None:
-    print('no inputs specified, please run ccCalc before')
-else:
-    correlationFile=args.DISTfile
+#if args.DISTfile is None:
+#    print('no inputs specified, please run ccCalc before')
+#else:
+#    correlationFile=args.DISTfile
 
 
 ##
 #Call to ccCalc if no distances founf but files listed
 
-# if args.DISTfile is None: 
-#     if args.structures is None:
-#         print('no inputs specified, please run ccCalc before')
-#     else:
-#         #Run ccCalc with initial args list
-#         C = subprocess.Popen('ccCalc -f %s'%(args.structures), cwd=os.getcwd())
-#         correlationFile=('ccCluster_log.txt')
-# else:
-#     correlationFile=args.DISTfile
+if args.DISTfile is None: 
+    if args.structures is None:
+        print('no inputs specified, please run ccCalc before')
+        exit()
+    else:
+        #Run ccCalc with initial args list
+        #C = subprocess.Popen('ccCalc -f %s'%(args.structures), cwd=os.getcwd())
+        C = subprocess.Popen('/opt/pxsoft/bin/ccCalc', '-h',cwd=os.getcwd())
+        correlationFile=('ccCluster_log.txt')
+else:
+    correlationFile=args.DISTfile
 
 
 

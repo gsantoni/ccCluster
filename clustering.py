@@ -111,9 +111,9 @@ class Clustering():
 #still not funtioninhg
 #Uncomment when will be needed
 
-    def createDendrogram(self, thr, pos=None):
-        X = hierarchy.dendrogram(self.Tree, color_threshold=thr)
-        plt.draw()
+    # def createDendrogram(self, thr, pos=None):
+    #     X = hierarchy.dendrogram(self.Tree, color_threshold=thr)
+    #     plt.draw()
 
 #Function to return flat cluster to a text file
 #will be included in the output folder for the cluster
@@ -123,8 +123,8 @@ class Clustering():
         counter=collections.Counter(FlatC)
         clusterToJson={}
         clusterToJson['HKL']=[]
-        clusterFile =  open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.json'%(float(thr),Best, anomFlag), 'w')        
         Best = max(counter.items(), key=operator.itemgetter(1))[0]
+        clusterFile =  open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/flatCluster.json'%(float(thr),Best, anomFlag), 'w')        
         for cluster, hkl in zip(FlatC, labelsList):
             clusterToJson['HKL'].append({
                 'input_file':hkl,
@@ -169,25 +169,25 @@ class Clustering():
         while x > 1:
             FlatC = hierarchy.fcluster(self.Tree, x, criterion='distance')
             counter=collections.Counter(FlatC)
-            Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+            Best = max(counter.items(), key=operator.itemgetter(1))[0]
 
 
-# the list ToProcess is needed by the scaling routines
+# the list self.ToProcess is needed by the scaling routines
 # fix all this new mess!
     def whatToProcess(self):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')        
         counter=collections.Counter(FlatC)
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
         Process = True
         #change checkboxes to standard variables
         if Process:
-            ToProcess = [Best]    
+            self.ToProcess = [Best]    
         else:
-            ToProcess = set(Clusters)
-            for key in ToProcess:
+            self.ToProcess = set(Clusters)
+            for key in self.ToProcess:
                 if counter[key]==1:
-                    ToProcess = [x for x in ToProcess if x != key]
-        return ToProcess
+                    self.ToProcess = [x for x in self.ToProcess if x != key]
+        return self.ToProcess
 
 
 #Run XSCALE to merge the biggest cluster
@@ -197,19 +197,18 @@ class Clustering():
                     
     def prepareScaling(self, anomFlag, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
-        Log = open(self.CurrentDir+'/.cc_cluster.log', 'a')
         counter=collections.Counter(FlatC)
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
         Process = True
 #change checkboxes to standard variables
         if Process:
-            ToProcess = [Best]    
+            self.ToProcess = [Best]    
         else:
-            ToProcess = set(Clusters)
-            for key in ToProcess:
+            self.ToProcess = set(Clusters)
+            for key in self.ToProcess:
                 if counter[key]==1:
-                    ToProcess = [x for x in ToProcess if x != key]
-        for x in ToProcess:
+                    self.ToProcess = [x for x in self.ToProcess if x != key]
+        for x in self.ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
                 os.mkdir(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s'%(float(thr),x, anomFlag))
                 Xscale=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/XSCALE.INP'%(float(thr),x, anomFlag), 'a')
@@ -225,7 +224,7 @@ class Clustering():
                 Pointless.close()
 
         for cluster, filename in zip(FlatC,self.labelList):
-            if cluster in ToProcess:
+            if cluster in self.ToProcess:
                 OUT = open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/XSCALE.INP'%(float(thr),cluster,anomFlag), 'a')
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),cluster,anomFlag), 'a')
                 print ('INPUT_FILE= ../%s'%(filename), file=OUT)
@@ -239,19 +238,19 @@ class Clustering():
 
     def scaleAndMerge(self, anomFlag, thr):
         newProcesses=[]
-        for x in ToProcess:
+        for x in self.ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
-                self.createDendrogram(thr)
-                plt.savefig(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr),x,anomFlag))
+                #self.createDendrogram(thr)
+                #plt.savefig(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr),x,anomFlag))
                 P= subprocess.Popen('xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
                 P.wait()
-                print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
+#                print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
                 newProcesses.append([thr,x, anomFlag])
 
 #run Pointless in each folder from the processing List
     def pointlessRun(self, anomFlag, thr):
         newProcesses=[]
-        for x in ToProcess:
+        for x in self.ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag), 'a')
                 print('COPY \n bg\n TOLERANCE 4 \n eof', file= Pointless)
@@ -267,21 +266,21 @@ class Clustering():
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         Log = open(self.CurrentDir+'/.cc_cluster.log', 'a')
         counter=collections.Counter(FlatC)
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
         print(Best)
         Process = True
         xscaleInputFiles=[]
 #change checkboxes to standard variables
         if Process:
-            ToProcess = [Best]    
+            self.ToProcess = [Best]    
         else:
-            ToProcess = set(Clusters)
-            for key in ToProcess:
+            self.ToProcess = set(Clusters)
+            for key in self.ToProcess:
                 if counter[key]==1:
-                    ToProcess = [x for x in ToProcess if x != key]
+                    self.ToProcess = [x for x in self.ToProcess if x != key]
 #Prepare list of filenames to shuffle over
         for cluster, filename in zip(FlatC, self.labelList):
-            if cluster in ToProcess:
+            if cluster in self.ToProcess:
                 xscaleInputFiles.append(filename)
         print(xscaleInputFiles)
 #run XSCALE with random ordered files 20 times
