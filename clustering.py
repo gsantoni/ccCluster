@@ -23,7 +23,7 @@ class Clustering():
         self.ccTable, self.Dimension = self.parseCCFile()
         self.createLabels()
         self.previousProcess()
-        A = self.tree()
+
 
     def previousProcess(self):
         self.alreadyDone= []
@@ -64,6 +64,12 @@ class Clustering():
         return self.labelList
         
 
+    def inputType(self):
+        element = self.labelList[0]
+        extension = element.split('.')[-1]
+        print(extension)
+        return extension
+    
 #changed, now the distance is defined directly by ccCalc
 #uses the complete linkage method
     def tree(self):
@@ -195,7 +201,7 @@ class Clustering():
 #!!!! Will need to define the processes to run externally
 #renaming function! Edit the calls in ccCluster accordingly
                     
-    def prepareScaling(self, anomFlag, thr):
+    def prepareXSCALE(self, anomFlag, thr):
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         counter=collections.Counter(FlatC)
         Best = max(counter.items(), key=operator.itemgetter(1))[0]
@@ -234,6 +240,32 @@ class Clustering():
                 OUT.close()
                 Pointless.close()
 
+    def preparePointless(self, anomFlag, thr):
+        FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
+        counter=collections.Counter(FlatC)
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
+        Process = True
+#change checkboxes to standard variables
+        if Process:
+            self.ToProcess = [Best]    
+        else:
+            self.ToProcess = set(Clusters)
+            for key in self.ToProcess:
+                if counter[key]==1:
+                    self.ToProcess = [x for x in self.ToProcess if x != key]
+        for x in self.ToProcess:
+            if [thr,x, anomFlag] not in  self.alreadyDone:
+                os.mkdir(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s'%(float(thr),x, anomFlag))
+                Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), 'a')
+                print('pointless hklout clustered.mtz << eof', file=Pointless)
+                Pointless.close()
+
+        for cluster, filename in zip(FlatC,self.labelList):
+            if cluster in self.ToProcess:
+                Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),cluster,anomFlag), 'a')
+                print ('HKLIN ../%s'%(filename), file= Pointless)
+                Pointless.close()
+
 #Run XSCALE in the pre-determined folders.
 
     def scaleAndMerge(self, anomFlag, thr):
@@ -259,6 +291,8 @@ class Clustering():
                 os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)       
                 P = subprocess.Popen(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh')
                 P.wait()
+
+
 
 # A function to investigate the influence of reference file in merging results
                 

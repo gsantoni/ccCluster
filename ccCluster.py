@@ -16,11 +16,10 @@ __status__ = "Beta"
 
 import matplotlib.pyplot as plt
 import sys
-#sys.path.append('/usr/lib/python2.7/dist-packages/')
-from scipy.cluster import hierarchy
-import collections
-import operator
-from time import sleep
+#from scipy.cluster import hierarchy
+#import collections
+#import operator
+#from time import sleep
 import os
 import subprocess
 #import ccCluster classes
@@ -99,6 +98,7 @@ CC = Clustering(correlationFile)
 Tree = CC.avgTree()
 etiquets=CC.createLabels()
 threshold = CC.thrEstimation()
+fileType = CC.inputType()
 
 # #Main part of the program
 # #with the different options, we can chose 
@@ -114,9 +114,15 @@ def main():
 
     if args.shell:
         CC.checkMultiplicity(threshold)
-        CC.prepareScaling('ano',threshold)
-        CC.scaleAndMerge('ano',threshold)
-        CC.flatClusterPrinter(threshold, etiquets, 'ano')        
+        if fileType=="HKL":
+            CC.prepareXSCALE('ano',threshold)
+            CC.scaleAndMerge('ano',threshold)
+            CC.flatClusterPrinter(threshold, etiquets, 'ano')
+        elif fileType=="mtz":
+            CC.preparePointless('ano',threshold)
+            CC.pointlessRun('ano',threshold)
+            CC.flatClusterPrinter(threshold, etiquets, 'ano')
+        else:            print("Unknown input file format.")
     elif args.count:
         CC.checkMultiplicity(threshold)
     elif args.est:
