@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
@@ -16,16 +16,11 @@ __status__ = "Beta"
 
 import matplotlib.pyplot as plt
 import sys
-#from scipy.cluster import hierarchy
-#import collections
-#import operator
-#from time import sleep
 import os
 import subprocess
+
 #import ccCluster classes
 
-from resultsTab import resultsTab
-from summary import resultsSummary
 from clustering import Clustering
 
 
@@ -78,7 +73,7 @@ G. Santoni and A. Popov, 2015-2019
 
 
 ##
-#Call to ccCalc if no distances founf but files listed
+#Call to ccCalc if no distances found but files listed
 
 if args.DISTfile is None: 
     if args.structures is None:
