@@ -1,11 +1,11 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
-__copyright__ = "Copyright 20150-2018"
+__copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
 __license__ = ""
-__version__ = "0.2"
+__version__ = "1.0"
 __maintainer__ = "Gianluca Santoni"
 __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
@@ -16,7 +16,6 @@ __status__ = "Beta"
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
 import sys
-#sys.path.append('/usr/lib/python2.7/dist-packages/')
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
@@ -43,9 +42,11 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i","--DISTfile", dest="DISTfile", default=None, help="Distance file from ccCalc module")
+parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
 parser.add_argument("-o","--outname", dest="outname", default='Dendrogram', help="output dendogram file name")
 parser.add_argument("-t", "--threshold", dest="threshold", help="Distance threshold for clustering")
-parser.add_argument("-p", "--process",action="store_true", dest="shell", default=False, help="Launch program in shell mode. Need to specify the threshold value")
+#shell processing now done calling ccCluster instead of ccCluster_gui
+#parser.add_argument("-p", "--process",action="store_true", dest="shell", default=False, help="Launch program in shell mode. Need to specify the threshold value")
 parser.add_argument("-c", "--count",action="store_true", dest="count", default=False, help="Counts datasets in the biggest cluster and exit")
 parser.add_argument("-e", "--estimation",action="store_true", dest="est", default=False, help="Tries to guess an optimal threshold value")
 parser.add_argument("-u", dest="cell", default= False , action="store_true" , help='Unit cell based clustering. requires list of input files')
@@ -74,31 +75,21 @@ G. Santoni and A. Popov, 2015
 --------------------/ ,  . \--------._
 """)
 
-
-#this part is commented out to separate ccCluster from ccCalc
-# if args.DISTfile is None:
-#     if args.HKLlist is None:
-#         print('No input specified, calculating Correlation coefficients')
-#         print('this might take a while')
-#         CalcClass.ccCalc()
-#         correlationFile='ccClusterLog.txt'
-#     elif args.cell:
-#         print("Calculating unit cell distance between specified files")
-#         CalcClass.cellList(args.HKLlist)
-#         correlationFile='ccClusterLog.txt'
-#     else:
-#         print("Calculating CC between specified files")
-#         CalcClass.ccList(args.HKLlist)
-#         correlationFile='ccClusterLog.txt'
-# else:
-#     correlationFile=args.DISTfile
-
-
 #Suggest to run ccCalc if no correlation file is provided
-if args.DISTfile is None:
-    print('no inputs specified, please run ccCalc before')
+#Call to ccCalc if no distances found but files listed
+if args.DISTfile is None: 
+    if args.structures is None:
+        print('no inputs specified, please run ccCalc before')
+        exit()
+    else:
+        #Run ccCalc with initial args list
+        hklin = " ".join(str(x) for x in args.structures)
+        C = subprocess.Popen('ccCalc -f %s'%(hklin), cwd=os.getcwd())
+        #C = subprocess.Popen('/opt/pxsoft/bin/ccCalc', '-h',cwd=os.getcwd())
+        correlationFile=('ccCluster_log.txt')
 else:
     correlationFile=args.DISTfile
+
 
 
 CC = Clustering(correlationFile)
@@ -379,11 +370,7 @@ def main():
     else:
         threshold= CC.thrEstimation()
 
-    if args.shell:
-        CC.checkMultiplicity(threshold)
-        CC.merge('ano',threshold)
-        CC.flatClusterPrinter(threshold, etiquets, 'ano')        
-    elif args.count:
+    if args.count:
         CC.checkMultiplicity(threshold)
     elif args.est:
         a = CC.thrEstimation()

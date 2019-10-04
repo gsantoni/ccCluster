@@ -5,7 +5,7 @@ __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
 __license__ = ""
-__version__ = "0.3"
+__version__ = "1.0"
 __maintainer__ = "Gianluca Santoni"
 __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
@@ -36,7 +36,8 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-i","--DISTfile", dest="DISTfile", default=None, help="Distance file from ccCalc module")
 parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
-parser.add_argument("-o","--outname", dest="outname", default='Dendrogram', help="output dendogram file name")
+#argument not currently in use, commented out
+#parser.add_argument("-o","--outname", dest="outname", default='Dendrogram', help="output dendogram file name")
 parser.add_argument("-t", "--threshold", dest="threshold", help="Distance threshold for clustering")
 parser.add_argument("-s", "--shuffle", dest="shuffle",action="store_true",default=False, help="Activates the XSCALE Shuffle function")
 parser.add_argument("-p", "--process",action="store_true", dest="shell", default=False, help="Launch program in shell mode. Need to specify the threshold value")
