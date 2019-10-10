@@ -294,6 +294,63 @@ class Clustering():
 
 
 
+
+
+#run aimless on the output from pointless
+#will run in folders with clustered.mtz file available.
+#TBD: fix directories paths into the aimless.inp file
+    def aimlessRun(self, anomFlag, thr):
+        for x in self.toProcess:
+            if [thr,x, anomFlag] not in  self.alreadyDone:
+                f1= open("aimless.inp", 'w')
+                runScript='''#!/bin/bash
+source /opt/pxsoft/ccp4/vdefault/linux-x86_64/ccp4-7.0/setup-scripts/ccp4.setup-sh
+
+aimless HKLIN {infile} << EOF
+HKLOUT {setname}_aimless.mtz'
+RESOLUTION LOW {resLow}  HIGH {resHigh}
+OUTPUT MERGED
+anomalous {anomflag}
+EOF
+
+#truncate: generate Fs
+truncate hklin {setname}_aimless.mtz hklout {setname}_tr.mtz <<EOF-trunc
+truncate yes
+EOF-trunc
+
+
+#unique: generate unique reflection set for rfree
+unique HKLOUT x_unq.mtz << EOF
+CELL {cell}
+SYMMETRY '{SpaceGroup}'
+LABOUT F=FUNI SIGF=SIGFUNI
+RESOLUTION {resHigh}
+EOF
+
+#freerflag: generate free reflections
+freerflag  HKLIN x_unq.mtz HKLOUT x_FreeR_unq.mtz <<EOF
+FREERFRAC 0.05
+END
+EOF
+
+#cad: combine free reflections with data
+cad HKLIN1 x_FreeR_unq.mtz HKLIN2 {setname}_tr.mtz  HKLOUT {setname}_cad.mtz<<EOF
+LABI FILE 1  E1=FreeR_flag
+LABI FILE 2  ALLIN
+END
+EOF
+
+freerflag  HKLIN {setname}_cad.mtz HKLOUT {setname}_scaled.mtz <<EOF
+COMPLETE FREE=FreeR_flag
+END
+EOF
+'''.format(infile = infile, setname = setname, resHigh = resHigh, resLow = resLow, anomflag = anomflag, cell = cell, SpaceGroup = SpaceGroup)
+                f1.write(runScript)
+                f1.close()
+                os.chmod(CurrentDir + '/aimless.inp',0744)
+                subprocess.call('./aimless.inp > aimless.log', cwd=CurrentDir, shell=True)
+     
+
 # A function to investigate the influence of reference file in merging results
                 
     def shuffleXscale(self, anomFlag, thr):
