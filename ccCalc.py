@@ -370,10 +370,6 @@ class cellList():
 
 
 class blendList():
-"""
-Uses unit cell but with the distance definition from Blend.
-Linear coherent variation, i.e. the unit cell biggest diaognal change
-"""
     def __init__(self, Arglist):
         self.LogFile=open('cellClusterLog.txt', 'w')
         self.CurrentDir= os.getcwd()
@@ -405,11 +401,7 @@ Linear coherent variation, i.e. the unit cell biggest diaognal change
         print('Correlation coefficients', file=self.LogFile)
         for L in self.results:
             print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
-'''
-Including a definition of distance like in Blend
-Calculate diagonals and find the maximum variation of those.
-Angle is converted to degrees beforehand
-'''
+
     def diagonalCell(self, a, b, angle):
         cosArgument= radians(180-angle)
         diag = sqrt(a**2+b**2-2*a*b*cos(cosArgument))
@@ -432,20 +424,17 @@ Angle is converted to degrees beforehand
         uc2 = I_obs2.unit_cell().parameters()
         a1, b1, c1, al1, be1, ga1 = uc1[0], uc1[1], uc1[2], uc[3], uc[4] , uc[5]
         a2, b2, c2, al2, be2, ga2 = uc2[0], uc2[1], uc2[2], uc[3], uc[4] , uc[5]
-        #calculate the 3 diagonals for each crystal
-
-        1diag1 = self.diagonalCell(a1, b1, ga1)
-        1diag2 = self.diagonalCell(b1, c1, al1)
-        1diag3 = self.diagonalCell(c1, a1, be1)
-
-        2diag1 = self.diagonalCell(a2, b2, ga2)
-        2diag2 = self.diagonalCell(a2, b2, ga2)
-        2diag3 = self.diagonalCell(a2, b2, ga2)        
+        bdiag1 = self.diagonalCell(a1, b1, ga1)
+        bdiag2 = self.diagonalCell(b1, c1, al1)
+        bdiag3 = self.diagonalCell(c1, a1, be1)
+        bdiag1 = self.diagonalCell(a2, b2, ga2)
+        bdiag2 = self.diagonalCell(a2, b2, ga2)
+        bdiag3 = self.diagonalCell(a2, b2, ga2)        
 
         #Calculate the LCV
-        LCV = [fabs(1diag1-2diag1)/min(1diag1,2diag1),
-               fabs(1diag2-2diag2)/min(1diag2,2diag2),
-               fabs(1diag3-2diag3)/min(1diag3, 2diag2)]
+        LCV = [fabs(adiag1-bdiag1)/min(adiag1,bdiag1),
+               fabs(adiag2-bdiag2)/min(adiag2,bdiag2),
+               fabs(adiag3-bdiag3)/min(adiag3, bdiag2)]
         return gen1.next(), gen2.next(), max(LCV)
 
     def cellSerial(self):
