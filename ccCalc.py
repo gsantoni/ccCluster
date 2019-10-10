@@ -406,7 +406,7 @@ Linear coherent variation, i.e. the unit cell biggest diaognal change
         for L in self.results:
             print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
 '''
-Including a definition of distance à la Blend
+Including a definition of distance like in Blend
 Calculate diagonals and find the maximum variation of those.
 Angle is converted to degrees beforehand
 '''
