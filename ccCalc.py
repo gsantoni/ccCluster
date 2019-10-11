@@ -32,6 +32,11 @@ import multiprocessing
 
 #Class to calc correlation on all data in tree of subfolders
 class ccCalc():
+    """
+    docsting here
+    This clas is used to calculate distances based on the cc between the datasets.
+    it works when no input files is provided.
+    """
     def __init__(self):
         self.LogFile=open('ccClusterLog.txt', 'w')
         self.CurrentDir= os.getcwd()
@@ -48,6 +53,10 @@ class ccCalc():
 
         
     def loadReflections(self):
+        """
+        Loads a file using cctbx and puts the corresponding miller array in a dictionary.
+        Dictionary keys are the filenames given as input.
+        """
         Arrays = {}
         for x in self.argList:
             hklFile = any_reflection_file(x)
@@ -60,6 +69,9 @@ class ccCalc():
         return Arrays
 
     def writeLog(self):
+        """
+        Writes labels and distance matrix to a plain text file
+        """
         print('Labels', file=self.LogFile)
         for n in enumerate(self.argList):
             print('INPUT_FILE: %s   %s'%(n[0], os.path.abspath(n[1])),file=self.LogFile)
@@ -68,6 +80,11 @@ class ccCalc():
             print('%s   %s   %s'%(L[0], L[1], L[2]), file=self.LogFile)
 
     def ccPrint(self,  arglist):
+        """
+        Calculates and returns cc between input files.
+        Returns the matrix element for being written in the log file
+        """
+        
         Array1 = self.Arrays[arglist[0]]
         Array2 = self.Arrays[arglist[1]]
 
@@ -135,7 +152,7 @@ class ccCalc():
         L = zip(a, b, cc)
         return L
 
-#class for unit cell without input filenames
+
     
 class cellCalc():
     def __init__(self):
@@ -189,13 +206,6 @@ class cellCalc():
                 I_obs2=x
                 break
 
-        # I_obs1 = Array1[3]
-        # I_obs2 = Array2[3]
-        # #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
-
-
-        #print I_obs1.correlation(I_obs2, use_binning=False).coefficient()
-
         I_ext1= I_obs1.generate_bijvoet_mates()
         I_ext2= I_obs2.generate_bijvoet_mates()
         try:
@@ -236,10 +246,12 @@ class cellCalc():
 
 
 
-
-#Calculate cc, but works if you specify a list of HKL files:
-
 class ccList():
+    """
+    docsting here
+    This class is used to calculate distances based on the cc between the datasets.
+    it works with a list input files from args.parser
+    """
     def __init__(self, Arglist):
         self.LogFile=open('ccClusterLog.txt', 'w')
         self.CurrentDir= os.getcwd()
@@ -288,13 +300,6 @@ class ccList():
                 I_obs2=x
                 break
 
-        # I_obs1 = Array1[3]
-        # I_obs2 = Array2[3]
-        # #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
-
-
-        #print I_obs1.correlation(I_obs2, use_binning=False).coefficient()
-
         I_ext1= I_obs1.generate_bijvoet_mates()
         I_ext2= I_obs2.generate_bijvoet_mates()
         try:
@@ -318,9 +323,12 @@ class ccList():
         L = zip(a, b, cc)
         return L
 
-#calculate unit cell distance, with list of input files
 
 class cellList():
+    """
+    This class is used to calculate distances based on the unit cell variations between the datasets.
+    it works with a list input files from args.parser
+    """   
     def __init__(self, Arglist):
         self.LogFile=open('cellClusterLog.txt', 'w')
         self.CurrentDir= os.getcwd()
@@ -365,7 +373,6 @@ class cellList():
 
         I_obs1 = b1[0]
         I_obs2 = b2[0]
-        #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
         uc1 = I_obs1.unit_cell().parameters()
         uc2 = I_obs2.unit_cell().parameters()
         a1, b1, c1 = uc1[0], uc1[1], uc1[2]
@@ -382,6 +389,10 @@ class cellList():
 
 
 class blendList():
+    """
+    This class is used to calculate distances based on the blend LCV between the datasets.
+    it works with a list input files from args.parser
+    """     
     def __init__(self, Arglist):
         self.LogFile=open('cellClusterLog.txt', 'w')
         self.CurrentDir= os.getcwd()
@@ -431,7 +442,6 @@ class blendList():
 
         I_obs1 = b1[0]
         I_obs2 = b2[0]
-        #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
         uc1 = I_obs1.unit_cell().parameters()
         uc2 = I_obs2.unit_cell().parameters()
         a1, b1, c1, al1, be1, ga1 = uc1[0], uc1[1], uc1[2], uc[3], uc[4] , uc[5]
@@ -456,10 +466,12 @@ class blendList():
             print('%s   %s   %s'%(a , b , cc), file=self.LogFile)
 
 
-#function to define a distance based on common reflections
-#will also give information to chose reference for scaling
-
 class commonList():
+    """
+    EXPERIMENTAL CODE!!!!! Do not use
+    This class is used to calculate distances based on the cc between the datasets.
+    it works with a list input files from args.parser
+    """ 
     def __init__(self, Arglist):
         self.LogFile=open('Common.txt', 'w')
         self.CurrentDir= os.getcwd()
@@ -508,13 +520,6 @@ class commonList():
                 I_obs2=x
                 break
 
-        # I_obs1 = Array1[3]
-        # I_obs2 = Array2[3]
-        # #Common1, Common2  = I_obs1.common_sets(I_obs2, assert_is_similar_symmetry= False)
-
-
-        #print I_obs1.correlation(I_obs2, use_binning=False).coefficient()
-
         I_ext1= I_obs1.generate_bijvoet_mates()
         I_ext2= I_obs2.generate_bijvoet_mates()
         try:
@@ -549,7 +554,6 @@ def main():
     parser.add_argument("-c", dest="common", default= False , action="store_true" , help='Experimental class based on common reflections only')
     args= parser.parse_args()
 
-    #HKLarrays = ccCalc.loadReflections(args.structures)
 
 
     CurrentDir= os.getcwd()
