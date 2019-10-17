@@ -1,5 +1,5 @@
 #! /usr/bin/env libtbx.python
-
+from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
@@ -11,7 +11,7 @@ __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
 
-from __future__ import print_function
+
 
 from iotbx.reflection_file_reader import any_reflection_file
 from iotbx.xds.integrate_hkl import reader

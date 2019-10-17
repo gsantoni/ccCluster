@@ -1,4 +1,4 @@
-
+from __future__ import print_function
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
@@ -9,7 +9,7 @@ __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
 
-from __future__ import print_function
+
 
 from scipy.cluster import hierarchy
 import scipy
@@ -23,11 +23,14 @@ import stat
 import json
 import random
 
-#parse cc_calc output and perform HCA
-#at each call, it generates the distance matrix
-# You get the dendrogram through Clustering.tree()
 
 class Clustering():
+    """
+    parse cc_calc output and perform HCA
+    at each call, it generates the distance matrix
+    You get the dendrogram through Clustering.tree()
+
+    """
     def __init__(self, ccCalcOutput):
         self.ccFile= ccCalcOutput
         self.CurrentDir = os.getcwd()
@@ -37,6 +40,10 @@ class Clustering():
 
 
     def previousProcess(self):
+        """
+        Lists all the clusters which have already been processed from a log file.
+        Updates the global variable alreadyDone
+        """
         self.alreadyDone= []
         if os.path.isfile(os.getcwd()+'/.cc_cluster.log'):
             with open(os.getcwd()+'/.cc_cluster.log') as log:
@@ -45,6 +52,9 @@ class Clustering():
                     self.alreadyDone.append([L[1], L[2].strip(), L[3].strip()])
 
     def parseCCFile(self):
+        """
+        Gets data from ccCalc ouput file and populates a numpy array with the distances
+        """
         with open(self.ccFile, 'r') as f:
             dataArr = None
             data=[]
@@ -62,6 +72,9 @@ class Clustering():
         return dataArr, Dimension
 
     def createLabels(self):
+        """
+        Gets the labels from the ccCalc output with the input file names
+        """        
         self.labelList= []
         with open(self.ccFile) as f:   
             for line in f:
@@ -76,14 +89,18 @@ class Clustering():
         
 
     def inputType(self):
+        """
+        return input file type. Either mtz or HLK
+        """        
         element = self.labelList[0]
         extension = element.split('.')[-1]
         print(extension)
         return extension
     
-#changed, now the distance is defined directly by ccCalc
-#uses the complete linkage method
     def tree(self):
+        """
+        Returns the HCA dendrogrm, using the complete linkage method
+        """        
         data = self.ccTable
         Matrix=np.zeros((self.Dimension,self.Dimension))
 
@@ -103,9 +120,10 @@ class Clustering():
         self.Tree =hierarchy.linkage(Distances, 'complete')
         return self.Tree
 
-#Perform HCA with the average linkage method
-#this is the defalut use from the main program ccCluster
     def avgTree(self):
+        """
+        Returns the HCA dendrogrm, using the average linkage method
+        """        
         data = self.ccTable
         Matrix=np.zeros((self.Dimension,self.Dimension))
 
@@ -124,18 +142,10 @@ class Clustering():
 
         return self.Tree
 
-#Funtion added to plot dendrogram in shell mode only.
-#still not funtioninhg
-#Uncomment when will be needed
-
-    # def createDendrogram(self, thr, pos=None):
-    #     X = hierarchy.dendrogram(self.Tree, color_threshold=thr)
-    #     plt.draw()
-
-#Function to return flat cluster to a text file
-#will be included in the output folder for the cluster
-
     def flatClusterPrinter(self, thr, labelsList, anomFlag):
+        """
+        Prints the flat cluster at a chosen threshold to a .json file
+        """        
         FlatC=hierarchy.fcluster(self.Tree, thr, criterion='distance')
         counter=collections.Counter(FlatC)
         clusterToJson={}
@@ -154,6 +164,9 @@ class Clustering():
 
         
     def thrEstimation(self):
+        """
+        Estimates the threshold for optimal clustering, based on the multiplicity of the biggest cluster
+        """             
         x = 0.00
         dx = 0.05
         countsList = []
@@ -173,6 +186,9 @@ class Clustering():
                 return a
 
     def checkMultiplicity(self, thr):
+        """
+        Prints the multiplicity of the biggest cluster at a given threshold
+        """                
         FlatC = hierarchy.fcluster(self.Tree, thr, criterion='distance')
         counter=collections.Counter(FlatC)
         Best = max(counter.items(), key=operator.itemgetter(1))[0]
