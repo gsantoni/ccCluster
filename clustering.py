@@ -374,7 +374,7 @@ EOF
 '''.format(infile = infile, setname = setname, resHigh = resHigh, resLow = resLow, anomflag = anomflag, cell = cell, SpaceGroup = SpaceGroup)
                 f1.write(runScript)
                 f1.close()
-                os.chmod(CurrentDir + '/aimless.inp',0744)
+                os.chmod(CurrentDir + '/aimless.inp', st.st_mode | 0o111)
                 subprocess.call('./aimless.inp > aimless.log', cwd=CurrentDir, shell=True)
      
 
