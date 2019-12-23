@@ -1,5 +1,5 @@
 .. ccCluster documentation master file, created by
-   sphinx-quickstart on Mon Dec 23 13:55:32 2019.
+   sphinx-quickstart on Mon Dec 23 14:48:10 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
