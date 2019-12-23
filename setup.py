@@ -6,3 +6,11 @@ __version__ = "1.0"
 __maintainer__ = "Gianluca Santoni"
 __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
+
+
+from setuptools import setup, find_packages
+
+setup(name="ccCLuster",
+      version="1.0",
+      packages=["ccCluster"]
+      )
