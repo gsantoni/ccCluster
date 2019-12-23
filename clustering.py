@@ -285,6 +285,7 @@ class Clustering():
                 os.mkdir(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s'%(float(thr),x, anomFlag))
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), 'a')
                 print('pointless hklout clustered.mtz << eof', file=Pointless)
+                print('XMLOUT pointlessLog.xml', file=Pointless)                
                 Pointless.close()
 
         for cluster, filename in zip(FlatC,self.labelList):
@@ -316,7 +317,7 @@ class Clustering():
                 Pointless.close()
                 st = os.stat(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ))
                 os.chmod(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),x,anomFlag ), st.st_mode | 0o111)       
-                P = subprocess.Popen(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh')
+                P = subprocess.Popen(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh > pointless.log')
                 P.wait()
 
 
@@ -326,6 +327,9 @@ class Clustering():
 #run aimless on the output from pointless
 #will run in folders with clustered.mtz file available.
 #TBD: fix directories paths into the aimless.inp file
+#also set all the proper input values into the function call
+#path to aimless executable to be verified.
+
     def aimlessRun(self, anomFlag, thr):
         for x in self.toProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
@@ -371,7 +375,7 @@ freerflag  HKLIN {setname}_cad.mtz HKLOUT {setname}_scaled.mtz <<EOF
 COMPLETE FREE=FreeR_flag
 END
 EOF
-'''.format(infile = infile, setname = setname, resHigh = resHigh, resLow = resLow, anomflag = anomflag, cell = cell, SpaceGroup = SpaceGroup)
+'''.format(infile = 'clustered.mtz', setname = 'clustered', resHigh = '1.0', resLow = '60', anomflag = 'ON', cell = cell, SpaceGroup = SpaceGroup)
                 f1.write(runScript)
                 f1.close()
                 os.chmod(CurrentDir + '/aimless.inp', st.st_mode | 0o111)
