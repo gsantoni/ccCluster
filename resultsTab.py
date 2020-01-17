@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
@@ -9,7 +10,6 @@ __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
 
-from __future__ import print_function
 
 
 from PyQt4 import QtGui, QtCore
