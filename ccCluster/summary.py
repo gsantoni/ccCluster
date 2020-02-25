@@ -19,13 +19,13 @@ from textSummary import generateLogSummary
 class resultsSummary(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
-        self.resultsLayout= QtGui.QVBoxLayout(self)
+        self.resultsLayout= QtWidgets.QVBoxLayout(self)
         self.setGeometry(100, 100, 500, 500)
         self.Workdir= os.getcwd()
 #the title of the results summary
-        self.Title=QtGui.QLabel(self)
+        self.Title=QtWidgets.QLabel(self)
         self.Title.setText('Summary of the results')
-        self.resultSummary= QtGui.QTextEdit()
+        self.resultSummary= QtWidgets.QTextEdit()
         self.resultsLayout.addWidget(self.Title)
         self.resultsLayout.addWidget(self.resultSummary)
         self.setText()
@@ -40,7 +40,7 @@ class resultsSummary(QtWidgets.QWidget):
 def main():
 #Can be launched alone to viasualize the results
 #without loading all the program
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     ex = resultsSummary()
     ex.show()
     sys.exit(app.exec_())      
