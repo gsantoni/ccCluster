@@ -277,7 +277,7 @@ class Ui_MainWindow(object):
 
         Clusters = hierarchy.fcluster(Tree, self.threshold, criterion='distance')
         counter=collections.Counter(Clusters)
-        Best = max(counter.iteritems(), key=operator.itemgetter(1))[0]
+        Best = max(counter.items(), key=operator.itemgetter(1))[0]
         #Chose if process all or just biggest cluster
 
         if self.checkBox.isChecked():
