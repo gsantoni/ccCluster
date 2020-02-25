@@ -13,11 +13,12 @@ __status__ = "Beta"
 
 
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtWidgets import QWidget, QApplication
 import matplotlib.pyplot as plt
 import sys
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 
 
@@ -109,12 +110,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtCore.QCoreApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtCore.QCoreApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtCore.QCoreApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -125,7 +126,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.setWindowTitle("Cluster and merge")
         MainWindow.resize(1215, 1000)
-        self.centralwidget = QtGui.QWidget(MainWindow)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.processedValues = []
         self.threshold = threshold
         self.CurrentDir = os.getcwd()
@@ -139,34 +140,34 @@ class Ui_MainWindow(object):
 ###########
 
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.centralWidgetLayout= QtGui.QHBoxLayout(self.centralwidget)
-        self.verticalLayoutWidget = QtGui.QWidget(self.centralwidget)
+        self.centralWidgetLayout= QtWidgets.QHBoxLayout(self.centralwidget)
+        self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setMaximumSize(200, 191)
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+#        self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.PlotButton = QtGui.QPushButton(self.verticalLayoutWidget)
+        self.PlotButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.PlotButton.setObjectName(_fromUtf8("PlotButton"))
         self.PlotButton.clicked.connect(self.createDendrogram)
 
         self.verticalLayout.addWidget(self.PlotButton)
-        self.lineEdit = QtGui.QLineEdit(self.verticalLayoutWidget)
+        self.lineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
         self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
         self.verticalLayout.addWidget(self.lineEdit)
-        self.checkBox = QtGui.QCheckBox(self.verticalLayoutWidget)
+        self.checkBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
         self.checkBox.setChecked(True)
         self.checkBox.setObjectName(_fromUtf8("checkBox"))
         self.verticalLayout.addWidget(self.checkBox)
-        self.anomBox = QtGui.QCheckBox(self.verticalLayoutWidget)
+        self.anomBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
         self.anomBox.setChecked(True)
         self.checkBox.setObjectName(_fromUtf8("anomBox"))
         self.verticalLayout.addWidget(self.anomBox)
-        self.processButton = QtGui.QPushButton(self.verticalLayoutWidget)
+        self.processButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.processButton.setObjectName(_fromUtf8("processButton"))
         self.processButton.clicked.connect(self.processClusters)
         self.verticalLayout.addWidget(self.processButton)
-        self.summaryButton= QtGui.QPushButton(self.verticalLayoutWidget)
+        self.summaryButton= QtWidgets.QPushButton(self.verticalLayoutWidget)
         self.summaryButton.setObjectName(_fromUtf8("summaryButton"))
         self.summaryButton.clicked.connect(self.showSummary)
         self.verticalLayout.addWidget(self.summaryButton)
@@ -179,15 +180,13 @@ class Ui_MainWindow(object):
 #Each Run of XSCALE will create a new tab for results
 ###########
 
-        self.verticalLayoutWidget_2 = QtGui.QWidget(self.centralwidget)
+        self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget_2.setMinimumSize(1020, 410)
-        #self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(160, 0, 1021, 411))
         self.verticalLayoutWidget_2.setObjectName(_fromUtf8("verticalLayoutWidget_2"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
-        self.verticalLayout_2.setMargin(0)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.tabWidget = QtGui.QTabWidget(self.verticalLayoutWidget_2)
-        self.tabWidget.setTabPosition(QtGui.QTabWidget.North)
+        self.tabWidget = QtWidgets.QTabWidget(self.verticalLayoutWidget_2)
+        self.tabWidget.setTabPosition(QtWidgets.QTabWidget.North)
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
 
         # this is the Canvas Widget that displays the `figure`
@@ -199,8 +198,8 @@ class Ui_MainWindow(object):
         self.TreeBar= NavigationToolbar(self.TreeCanvas, self)
         self.createDendrogram()
 
-        self.plotTab = QtGui.QWidget()
-        self.plotTabLayout=QtGui.QVBoxLayout(self.plotTab)
+        self.plotTab = QtWidgets.QWidget()
+        self.plotTabLayout=QtWidgets.QVBoxLayout(self.plotTab)
         self.plotTabLayout.addWidget(self.TreeBar)
         self.plotTabLayout.addWidget(self.TreeCanvas)
         self.plotTab.setObjectName(_fromUtf8("plotTab"))
@@ -209,11 +208,11 @@ class Ui_MainWindow(object):
         self.centralWidgetLayout.addWidget(self.verticalLayoutWidget_2)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtGui.QMenuBar(MainWindow)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
         #self.menubar.setGeometry(QtCore.QRect(0, 0, 1215, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         self.statusbar.showMessage('Ready!')
         MainWindow.setStatusBar(self.statusbar)
@@ -351,9 +350,9 @@ class Ui_MainWindow(object):
 
 
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None, f=QtCore.Qt.WindowFlags()):
-        QtGui.QMainWindow.__init__(self, parent, f)
+        QtWidgets.QMainWindow.__init__(self, parent, f)
 
         self.setupUi(self)
 
@@ -376,7 +375,7 @@ def main():
         a = CC.thrEstimation()
         print(a)
     else:
-        app = QtGui.QApplication(sys.argv)
+        app = QApplication(sys.argv)
         ex = MainWindow()
         ex.show()
         sys.exit(app.exec_())      

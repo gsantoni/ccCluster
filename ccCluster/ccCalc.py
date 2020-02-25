@@ -116,7 +116,7 @@ class ccCalc():
         except:
             cc=0
             print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))         
-        return gen1.next(), gen2.next(),sqrt(1.0001-cc**2)
+        return gen1.__next__(), gen2.__next__(),sqrt(1.0001-cc**2)
 
 
     def cellPrint( arglist):
@@ -138,7 +138,7 @@ class ccCalc():
         a1, b1, c1 = uc1[0], uc1[1], uc1[2]
         a2, b2, c2 = uc2[0], uc2[1], uc2[2]
         variation = [fabs(a1-a2)/min(a1,a2),fabs(b1-b2)/min(b1,b2),fabs(c1-c2)/min(c1, c2)]
-        return gen1.next(), gen2.next(), max(variation)
+        return gen1.__next__(), gen2.__next__(), max(variation)
 
     def calcSerial(self):
         print('Correlation coefficients', file=self.LogFile)
@@ -215,7 +215,7 @@ class cellCalc():
         except:
             cc=0
             print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))         
-        return gen1.next(), gen2.next(),sqrt(1.0001-cc**2)
+        return gen1.__next__(), gen2.__next__(),sqrt(1.0001-cc**2)
 
 
     def cellPrint(self, arglist):
@@ -236,7 +236,7 @@ class cellCalc():
         a1, b1, c1 = uc1[0], uc1[1], uc1[2]
         a2, b2, c2 = uc2[0], uc2[1], uc2[2]
         variation = [fabs(a1-a2)/min(a1,a2),fabs(b1-b2)/min(b1,b2),fabs(c1-c2)/min(c1, c2)]
-        return gen1.next(), gen2.next(), max(variation)
+        return gen1.__next__(), gen2.__next__(), max(variation)
 
     def cellSerial(self):
         print('Correlation coefficients', file=self.LogFile)
@@ -309,7 +309,7 @@ class ccList():
         except:
             cc=0
             print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))         
-        return gen1.next(), gen2.next(),sqrt(1.0001-cc**2)
+        return gen1.__next__(), gen2.__next__(),sqrt(1.0001-cc**2)
 
     def calcSerial(self):
         print('Correlation coefficients', file=self.LogFile)
@@ -378,7 +378,7 @@ class cellList():
         a1, b1, c1 = uc1[0], uc1[1], uc1[2]
         a2, b2, c2 = uc2[0], uc2[1], uc2[2]
         variation = [fabs(a1-a2)/min(a1,a2),fabs(b1-b2)/min(b1,b2),fabs(c1-c2)/min(c1, c2)]
-        return gen1.next(), gen2.next(), max(variation)
+        return gen1.__next__(), gen2.__next__(), max(variation)
 
     def cellSerial(self):
         print('Correlation coefficients', file=self.LogFile)
@@ -457,7 +457,7 @@ class blendList():
         LCV = [fabs(adiag1-bdiag1)/min(adiag1,bdiag1),
                fabs(adiag2-bdiag2)/min(adiag2,bdiag2),
                fabs(adiag3-bdiag3)/min(adiag3, bdiag2)]
-        return gen1.next(), gen2.next(), max(LCV)
+        return gen1.__next__(), gen2.__next__(), max(LCV)
 
     def cellSerial(self):
         print('Correlation coefficients', file=self.LogFile)
@@ -529,7 +529,7 @@ class commonList():
         except:
             common=0
             print('Calculated correlation between %s and %s'%(arglist[0],arglist[1]))         
-        return gen1.next(), gen2.next(), 1000/common
+        return gen1.__next__(), gen2.__next__(), 1000/common
 
     def calcSerial(self):
         print('Correlation coefficients', file=self.LogFile)

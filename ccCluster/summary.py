@@ -9,16 +9,16 @@ __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 import os, sys
 
 from textSummary import generateLogSummary
 #a class to generate the results widget.
 #will be used as a tab in the main window
 
-class resultsSummary(QtGui.QWidget):
+class resultsSummary(QtWidgets.QWidget):
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.resultsLayout= QtGui.QVBoxLayout(self)
         self.setGeometry(100, 100, 500, 500)
         self.Workdir= os.getcwd()

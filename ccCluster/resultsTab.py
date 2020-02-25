@@ -9,14 +9,14 @@ __email__ = "gianluca.santoni@esrf.fr"
 __status__ = "Beta"
 
 
-from __future__ import print_function
 
 
-from PyQt4 import QtGui, QtCore
+
+from PyQt5 import QtGui, QtCore, QtWidgets
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 # implement the default mpl key bindings
 
@@ -40,10 +40,10 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class resultsTab(QtGui.QWidget):
+class resultsTab(QtWidgets.QWidget):
 
     def __init__(self, thr,cls, anom, num):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.CurrentDir= os.getcwd()
         self.plotList= []
         self.tabLayout= QtGui.QVBoxLayout(self)
