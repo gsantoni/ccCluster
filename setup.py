@@ -1,5 +1,5 @@
 __author__ = "Gianluca Santoni"
-__copyright__ = "Copyright 20150-2019"
+__copyright__ = "Copyright 2015-2020"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
 __license__ = ""
 __version__ = "1.0"
@@ -12,5 +12,8 @@ from setuptools import setup, find_packages
 
 setup(name="ccCLuster",
       version="1.0",
-      packages=["ccCluster"]
+      description='Hierarchical cluster analysis for MX',
+      author='Gianluca Santoni',
+      packages=["ccCluster"],
+      scripts=['ccCluster/ccCalc.py', 'ccCluster/ccCluster.py']
       )
