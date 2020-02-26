@@ -106,8 +106,7 @@ class Clustering():
 
         reducedArray=[]
         for line in data:
-                #print line
-            if line is not None and len(line) is not 0:
+            if line != None and len(line) != 0:
                  Matrix[int(line[0]),int(line[1])]= line[2]
                  Matrix[int(line[1]),int(line[0])]= line[2]
 
@@ -129,8 +128,7 @@ class Clustering():
 
         reducedArray=[]
         for line in data:
-                #print line
-            if line is not None and len(line) is not 0:
+            if line != None and len(line) != 0:
                  Matrix[int(line[0]),int(line[1])]= line[2]
                  Matrix[int(line[1]),int(line[0])]= line[2]
         for x in range(0,self.Dimension):
