@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
@@ -12,7 +12,7 @@ __status__ = "Beta"
 from PyQt5 import QtGui, QtCore, QtWidgets
 import os, sys
 
-from textSummary import generateLogSummary
+from .textSummary import generateLogSummary
 #a class to generate the results widget.
 #will be used as a tab in the main window
 
