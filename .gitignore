@@ -14,3 +14,6 @@ git-notifier.log
 .gitignore
 docs/_build
 docs/sphinx/installation.stable_release.json
+build/
+ccCLuster.egg-info/
+dist/

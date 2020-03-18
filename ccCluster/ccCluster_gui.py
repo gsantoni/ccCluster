@@ -2,7 +2,7 @@
 from __future__ import print_function, absolute_import
 
 __author__ = "Gianluca Santoni"
-__copyright__ = "Copyright 20150-2019"
+__copyright__ = "Copyright 20150-2020"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
 __license__ = ""
 __version__ = "1.0"
@@ -61,7 +61,7 @@ args= parser.parse_args()
 #Startup message
 
 print("""ccCluster - HCA for protein crystallography 
-G. Santoni and A. Popov, 2015
+G. Santoni and A. Popov, 2015-2020
               v .   ._, |_  .,
            `-._\/  .  \ /    |/_
                \\  _\, y | \//
