@@ -14,6 +14,7 @@ setup(name="ccCLuster",
       version="1.0",
       description='Hierarchical cluster analysis for MX',
       author='Gianluca Santoni',
+      package_dir={"": "lib"},
       packages=["ccCluster"],
       setup_requires=['setuptools'],
       install_requires=[
