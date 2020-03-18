@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
@@ -32,9 +32,9 @@ from time import sleep
 import os
 
 
-from resultsTab import resultsTab
-from summary import resultsSummary
-from clustering import Clustering
+from .resultsTab import resultsTab
+from .summary import resultsSummary
+from .clustering import Clustering
 #import CalcClass
 
 # Insert parse  to change the file path from command line

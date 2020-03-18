@@ -15,5 +15,16 @@ setup(name="ccCLuster",
       description='Hierarchical cluster analysis for MX',
       author='Gianluca Santoni',
       packages=["ccCluster"],
-      scripts=['ccCluster/ccCalc.py', 'ccCluster/ccCluster.py']
+      setup_requires=['setuptools'],
+      install_requires=[
+          'numpy',
+          'scipy',
+          'pathos',
+          'matplotlib',
+          'PyQt5'],  # TODO: iotbx, cctbx
+      entry_points={
+          'console_scripts': [
+              'ccCalc = ccCluster.ccCalc:main',
+              'ccCluster = ccCluster.ccCluster:main'],
+          },
       )

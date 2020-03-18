@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
@@ -21,7 +21,7 @@ import subprocess
 
 #import ccCluster classes
 
-from clustering import Clustering
+from .clustering import Clustering
 
 
 # Insert parse  to change the file path from command line
