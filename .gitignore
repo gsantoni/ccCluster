@@ -11,6 +11,9 @@ _*.nb
 .git-notifier*
 git-notifier.log
 .gitversion
-.gitignore
+
 docs/_build
 docs/sphinx/installation.stable_release.json
+
+
+build/
