@@ -551,7 +551,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
     parser.add_argument("-u", dest="cell", default= False , action="store_true" , help='Unit cell based clustering. requires list of input files')
-    parser.add_argument("-c", dest="common", default= False , action="store_true" , help='Experimental class based on common reflections only')
+#    parser.add_argument("-c", dest="common", default= False , action="store_true" , help='Experimental class based on common reflections only')
     args= parser.parse_args()
 
 
