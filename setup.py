@@ -26,6 +26,6 @@ setup(name="ccCLuster",
           'console_scripts': [
               'ccCalc = ccCluster.ccCalc:main',
               'ccCluster = ccCluster.ccCluster:main',
-			  'ccCluster-gui=ccCluster.ccCluster-gui:main'],
+			  'ccCluster-gui = ccCluster.ccCluster_gui:main'],
           },
       )
