@@ -12,5 +12,8 @@ _*.nb
 git-notifier.log
 .gitversion
 
-doc/sphinx/build
-doc/sphinx/installation.stable_release.json
+docs/_build
+docs/sphinx/installation.stable_release.json
+
+
+build/

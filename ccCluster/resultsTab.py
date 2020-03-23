@@ -1,5 +1,8 @@
+<<<<<<< HEAD:ccCluster/resultsTab.py
+=======
 from __future__ import print_function
 
+>>>>>>> master:resultsTab.py
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
@@ -12,11 +15,13 @@ __status__ = "Beta"
 
 
 
-from PyQt4 import QtGui, QtCore
+
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtWidgets import QWidget, QApplication
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 # implement the default mpl key bindings
 
@@ -35,26 +40,26 @@ except AttributeError:
 try:
     _encoding = QtGui.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
-class resultsTab(QtGui.QWidget):
+class resultsTab(QtWidgets.QWidget):
 
     def __init__(self, thr,cls, anom, num):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.CurrentDir= os.getcwd()
         self.plotList= []
-        self.tabLayout= QtGui.QVBoxLayout(self)
+        self.tabLayout= QtWidgets.QVBoxLayout(self)
         self.Picture= QtGui.QPixmap(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr), cls, anom))
-        self.ImageBox = QtGui.QLabel(self)
+        self.ImageBox = QtWidgets.QLabel(self)
         self.ImageBox.setPixmap(self.Picture)
         self.ImageBox.setMaximumSize(400,150)
         self.ImageBox.setScaledContents(True)
-        self.Title=QtGui.QLabel(self)
+        self.Title=QtWidgets.QLabel(self)
         self.Title.setText('Threshold %.2f, Cluster %s, %s, %s datasets'%(float(thr), cls, anom, num))
-        self.Text= QtGui.QTextEdit()
+        self.Text= QtWidgets.QTextEdit()
 
     #self.LogFile=open(self.CurrentDir+'/cc_Cluster_%.2f_%s/XSCALE.LP'%(float(thr), cls)).read()
         self.statsPlot = Figure()
@@ -78,26 +83,26 @@ class resultsTab(QtGui.QWidget):
 
 #Buttons to plot stats
 
-        self.buttonBar = QtGui.QWidget()
-        self.barLayout= QtGui.QHBoxLayout(self.buttonBar)
+        self.buttonBar = QtWidgets.QWidget()
+        self.barLayout= QtWidgets.QHBoxLayout(self.buttonBar)
 
-        self.ccVsR= QtGui.QPushButton()
+        self.ccVsR= QtWidgets.QPushButton()
         self.ccVsR.setText(_fromUtf8("Compl. vs Res"))
         self.ccVsR.clicked.connect(lambda:self.plotStats(0,4,"Compl. vs Res" ))
 
-        self.compVsR= QtGui.QPushButton()
+        self.compVsR= QtWidgets.QPushButton()
         self.compVsR.setText(_fromUtf8("cc vs Res"))
         self.compVsR.clicked.connect(lambda:self.plotStats(0,10,"cc vs Res" ))
 
-        self.RobsVsR= QtGui.QPushButton()
+        self.RobsVsR= QtWidgets.QPushButton()
         self.RobsVsR.setText(_fromUtf8("Robs vs Res"))
         self.RobsVsR.clicked.connect(lambda:self.plotStats(0,5, "Robs vs Res" ))
 
-        self.IsigmaVsR= QtGui.QPushButton()
+        self.IsigmaVsR= QtWidgets.QPushButton()
         self.IsigmaVsR.setText(_fromUtf8("I/sigmaI vs Res"))
         self.IsigmaVsR.clicked.connect(lambda:self.plotStats(0,8,"I/sigmaI vs Res" ))
 
-        self.SanoVsR= QtGui.QPushButton()
+        self.SanoVsR= QtWidgets.QPushButton()
         self.SanoVsR.setText(_fromUtf8("Sig. Ano. vs Res"))
         self.SanoVsR.clicked.connect(lambda:self.plotStats(0,12,"Sig. Ano. vs Res" ))
 

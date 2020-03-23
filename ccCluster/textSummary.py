@@ -27,7 +27,7 @@ class generateLogSummary():
         complText=""" 
 
 ccCluster
-Created by Gianluca Santoni, Uli Zander and Sasha Popov
+Created by Gianluca Santoni.
 
 This is summary of your current clusterings:
 The 3 most complete datasets are: 
