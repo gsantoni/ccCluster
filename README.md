@@ -29,21 +29,31 @@ Now ccCluster commands will be available every time you activate the virtual env
 At first, you must run ccCalc to generate the distance files.
 ccCalc must receive, the first time you run it for a project, a list of HKL files.
 To do this, you can simply call
+```
 ccCalc -f <FILE1>.HKL ... <FILEn>.HKL
+```
 
 if no file is specified, it will walk all the subdirectories of the current folder and look for HKL files.
 This will produce a file named ccClusterLog.txt
 One the run is done, you can open ccCluster.
 The most basic run can be launched with
+```
 ccCluster -i ccClusterLog.txt
+```
 
 ## Dependencies are:
 
-PyQt4
+PyQt5
 
-cctbx (check that libtbx.python is in your path)
+cctbx
 
 matplotlib
 
 numpy
+
+scipy
+
+## Note on cctbx
+To generate a virtual environment with the requirement.txt, you need to have 
+conda-forge in your .condarc file.
 
