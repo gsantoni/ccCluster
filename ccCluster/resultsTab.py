@@ -1,8 +1,5 @@
-<<<<<<< HEAD:ccCluster/resultsTab.py
-=======
 from __future__ import print_function
 
->>>>>>> master:resultsTab.py
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
 __credits__ = ["Gianluca Santoni, Alexander Popov"]
