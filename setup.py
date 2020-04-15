@@ -25,6 +25,7 @@ setup(name="ccCLuster",
       entry_points={
           'console_scripts': [
               'ccCalc = ccCluster.ccCalc:main',
+              'HCAPipeline = ccCluster.HCAPipeline:main',
               'ccCluster = ccCluster.ccCluster:main',
 			  'ccCluster-gui = ccCluster.ccCluster_gui:main'],
           },
