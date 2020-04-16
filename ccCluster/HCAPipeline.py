@@ -16,25 +16,38 @@ __status__ = "Beta"
 import matplotlib.pyplot as plt
 import sys
 import os
+import time
 import subprocess
-
+from os.path import join , isfile
 #import ccCluster classes to run the soft
 from .ccCalc import ccList
 from .clustering import Clustering
 
 
-# Insert parse  to change the file path from command line
-
-import argparse
-
-
-
 def main():
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-f", dest="structures", default= None ,  type=str, nargs='+', help='The list of refined structures to merge')
-    args= parser.parse_args()
-    ccList(args.structures)
+    workdir = os.getcwd()
+    try:
+        os.mkdir(workdir+'/HCA')
+        os.chdir(workdir+'/HCA')
+    except:
+        os.chdir(workdir+'/HCA')        
+    grenades_runs = [join(workdir,x) for x in os.listdir(workdir) if 'grenades' in x]
+    succes = []
+    failed = []
+    shouldContinue = True
+    while shouldContinue=True:
+        time.sleep(5)
+        for path in grenades_runs :
+            if isfile(path+'/.SUCCESS') :
+                success.append(path)
+            elif isfile(path+'/.FAILED'):
+                failed.append(path)
+            else:
+                
+        if len(success)+len(failed)=len(folders):
+            shouldContinue = False
+    
+    ccList(success)
     correlationFile='ccClusterLog.txt'
     CC = Clustering(correlationFile)
     Tree = CC.avgTree()
