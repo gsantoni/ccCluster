@@ -35,7 +35,7 @@ def main():
     succes = []
     failed = []
     shouldContinue = True
-    while shouldContinue=True:
+    while shouldContinue==True:
         time.sleep(5)
         for path in grenades_runs :
             if isfile(path+'/.SUCCESS') :
@@ -44,7 +44,7 @@ def main():
                 failed.append(path)
             else:
                 
-        if len(success)+len(failed)=len(folders):
+        if len(success)+len(failed)==len(folders):
             shouldContinue = False
     
     ccList(success)
@@ -67,3 +67,5 @@ def main():
 
 if __name__ =='__main__' :
     main()
+
+    
