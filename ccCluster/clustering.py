@@ -264,7 +264,7 @@ class Clustering():
                 Pointless=open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/launch_pointless.sh'%(float(thr),cluster,anomFlag), 'a')
                 print ('INPUT_FILE= ../%s'%(filename), file=OUT)
                 #print ('INCLUDE_RESOLUTION_RANGE=20, 1.8', file=OUT)
-                print ('MINIMUM_I/SIGMA= 0', file=OUT)
+                #print ('MINIMUM_I/SIGMA= 0', file=OUT)
                 print ('XDSIN ../%s'%(filename), file= Pointless)
                 OUT.close()
                 Pointless.close()
@@ -303,7 +303,8 @@ class Clustering():
         for x in self.ToProcess:
             if [thr,x, anomFlag] not in  self.alreadyDone:
                 #self.createDendrogram(thr)
-                #plt.savefig(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr),x,anomFlag))
+                X = hierarchy.dendrogram(self.Tree, color_threshold=float(thr))
+                plt.savefig(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/Dendrogram.png'%(float(thr),x,anomFlag))
                 P= subprocess.Popen('xscale_par',cwd=self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/'%(float(thr), x, anomFlag))     
                 P.wait()
 #                print('Cluster, %s , %s , %s'%(float(thr),x, anomFlag), file=Log)             
@@ -417,7 +418,7 @@ EOF
             random.shuffle(xscaleInputFiles)
             for hkl in xscaleInputFiles:
                 print ('INPUT_FILE= ../%s'%(hkl), file=Xscale)
-                print ('MINIMUM_I/SIGMA= 0', file=Xscale)        
+                #print ('MINIMUM_I/SIGMA= 0', file=Xscale)        
             P= subprocess.Popen('xscale_par',cwd=self.CurrentDir+'/thr_%.2f_run_%s'%(float(thr),x))     
             P.wait()
    

@@ -42,8 +42,6 @@ def main():
                 success.append(path)
             elif isfile(path+'/.FAILED'):
                 failed.append(path)
-            else:
-                
         if len(success)+len(failed)==len(folders):
             shouldContinue = False
     
