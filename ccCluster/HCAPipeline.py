@@ -32,7 +32,7 @@ def main():
     except:
         os.chdir(workdir+'/HCA')        
     grenades_runs = [join(workdir,x) for x in os.listdir(workdir) if 'grenades' in x]
-    succes = []
+    success = []
     failed = []
     shouldContinue = True
     while shouldContinue==True:
@@ -42,7 +42,7 @@ def main():
                 success.append(path)
             elif isfile(path+'/.FAILED'):
                 failed.append(path)
-        if len(success)+len(failed)==len(folders):
+        if len(success)+len(failed)==len(grenades_runs):
             shouldContinue = False
     
     ccList(success)
