@@ -25,6 +25,7 @@ import stat
 import json
 import random
 
+from .report  import WorkflowStepReport
 
 class Clustering():
     """
