@@ -121,7 +121,5 @@ def main():
     elif args.est:
         a = CC.thrEstimation()
         print(a)
-    elif args.shuffle:
-        CC.shuffleXscale('ano',threshold)
 if __name__== '__main__':
     main()
