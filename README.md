@@ -14,7 +14,7 @@ https://doi.org/10.1107/S1600576717015229.
 ## Installation with conda
 First, you would need to create a virtual environment:
 ```
-conda create --name HCA --file environment.txt
+conda create --name HCA -c conda-forge
 ```
 After, activate the environment and build the program:
 ```
@@ -25,6 +25,7 @@ python setup.py build
 pip install .
 ```
 Now ccCluster commands will be available every time you activate the virtual environment.
+
 ## Basic Usage
 At first, you must run ccCalc to generate the distance files.
 ccCalc must receive, the first time you run it for a project, a list of HKL files.
@@ -40,18 +41,14 @@ The most basic run can be launched with
 ```
 ccCluster -i ccClusterLog.txt
 ```
+To run in a fully user-independent mode, you can cal the HCAPipeline command
 
-## Dependencies are:
+```
+HCAPipeline -f <FILE1>.HKL ... <FILEn>.HKL
+```
 
-PyQt5
 
-cctbx
 
-matplotlib
-
-numpy
-
-scipy
 
 ## Note on cctbx
 To generate a virtual environment with the requirement.txt, you need to have 

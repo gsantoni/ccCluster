@@ -25,13 +25,13 @@ import stat
 import json
 import random
 
+# from .report  import WorkflowStepReport
 
 class Clustering():
     """
     parse cc_calc output and perform HCA
     at each call, it generates the distance matrix
     You get the dendrogram through Clustering.tree()
-
     """
     def __init__(self, ccCalcOutput):
         self.ccFile= ccCalcOutput
@@ -39,6 +39,7 @@ class Clustering():
         self.ccTable, self.Dimension = self.parseCCFile()
         self.createLabels()
         self.previousProcess()
+
 
 
     def previousProcess(self):
@@ -112,8 +113,6 @@ class Clustering():
             if line is not None and len(line) is not 0:
                  Matrix[int(line[0]),int(line[1])]= line[2]
                  Matrix[int(line[1]),int(line[0])]= line[2]
-
-
         for x in range(0,self.Dimension):
             for y in range(x+1,self.Dimension):
                 reducedArray.append(Matrix[x,y])

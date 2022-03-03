@@ -1,5 +1,5 @@
 #! /usr/bin/env libtbx.python
-from __future__ import print_function
+from __future__ import print_function, absolute_import 
 
 __author__ = "Gianluca Santoni"
 __copyright__ = "Copyright 20150-2019"
