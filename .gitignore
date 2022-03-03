@@ -11,9 +11,15 @@ _*.nb
 .git-notifier*
 git-notifier.log
 .gitversion
-.gitignore
+
 docs/_build
 docs/sphinx/installation.stable_release.json
+<<<<<<< HEAD
 build/
 ccCLuster.egg-info/
 dist/
+=======
+
+
+build/
+>>>>>>> e7733a210a1a45442b33c35068f00aa9fca0ff01
