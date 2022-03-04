@@ -254,10 +254,13 @@ class ccList():
     """
     def __init__(self, Arglist):
         self.LogFile=open('ccClusterLog.txt', 'w')
+        self.GAfolder = os.mkdir('GA')
+        self.GAinput = open('GA/codgas.INP', 'w')
         self.CurrentDir= os.getcwd()
         self.argList= Arglist
         self.Arrays= self.loadReflections()
         self.results = self.calcSerial()
+        self.simpleAvgCell()
 
 
         
@@ -322,8 +325,69 @@ class ccList():
         a, b, cc = zip(*proc.map(self.ccPrint, itertools.combinations(self.Arrays, 2)))
         L = zip(a, b, cc)
         return L
+# simple tool for avg unit cell, parsing directly the HKL file.
+    def simpleAvgCell(self):
+        A = []
+        B = []
+        C = []
+        Al= []
+        Be= []
+        Ga= []
+        for x in self.argList:
+            with open(x, 'r') as fi:
+                for ln in fi:
+                    if ln.startswith('!SPACE_GROUP_NUMBER'):
+                        sgline = ln.split()
+                        sg = sgline[1]
+                    if ln.startswith('!UNIT_CELL_CONSTANTS'):
+                        params = ln.split()
+                        a, b, c = params[1], params[2], params[3]
+                        alfa, beta, gamma = params[4], params[5], params[6]
+                        print(a,b,c)
+                        A.append(float(a))
+                        B.append(float(b))
+                        C.append(float(c))
+                        Al.append(float(alfa))
+                        Be.append(float(beta))
+                        Ga.append(float(gamma))
+        print(sg, file=self.GAinput) 
+        print(sum(A)/len(A), sum(B)/len(B), sum(C)/len(C),sum(Al)/len(Al), sum(Be)/len(Be),sum(Ga)/len(Ga), file=self.GAinput)
+            
+            
+    
+#following function outputs the UC parameter and SG to be sent to codgas, using CCTBX
+    def getUnitCell(self, arg):
+        Array1 = arg
+        b1 = Array1
+        I_obs1 = b1[0]
+        uc1 = I_obs1.unit_cell().parameters()
+        a1, b1, c1 = uc1[0], uc1[1], uc1[2]
+        print(a1,b1,c1)
+        return a1, b1, c1
+
+    def calcAvgCell(self):
+        A = []
+        B = []
+        C = []
+        for x in self.Arrays:
+            a, b, c = self.getUnitCell(x)
+            A.append(a)
+            B.append(b)
+            C.append(c)
+            print('%s %s %s'%(a,b,c))
+        avgA = sum(A)/len(A)
+        avgB = sum(B)/len(B)
+        avgC = sum(C)/len(C)
+        print("%s %s %s "%(avgA, avgB, avgC), self.GAinput)
 
 
+
+        
+        
+
+
+        
+        
 class cellList():
     """
     This class is used to calculate distances based on the unit cell variations between the datasets.
