@@ -111,6 +111,7 @@ def main():
             CC.prepareXSCALE('ano',threshold)
             CC.scaleAndMerge('ano',threshold)
             CC.flatClusterPrinter(threshold, etiquets, 'ano')
+            CC.passOInfoToGA(threshold, etiquets, 'ano')
         elif fileType=="mtz":
             CC.preparePointless('ano',threshold)
             CC.pointlessRun('ano',threshold)

@@ -163,13 +163,13 @@ class Clustering():
         print(j, file=clusterFile) 
 # function to pipe HCA into codgas for subsequent GA analysis.
 
-    def passOInfoToGA(self, thr, labelsList, anomFlag)
+    def passOInfoToGA(self, thr, labelsList, anomFlag):
             FlatC=hierarchy.fcluster(self.Tree, thr, criterion='distance')
             counter=collections.Counter(FlatC)
             Best = max(counter.items(), key=operator.itemgetter(1))[0]
-            codgasINP =  open(self.CurrentDir+'/cc_Cluster_%.2f_%s_%s/codgas.INP'%(float(thr),Best, anomFlag), 'w')
+            codgasINP =  open(self.CurrentDir+'/GA/codgas.INP', 'a')
             for cluster, dataset in zip(FlatC, labelsList):
-                print("%s %s"%(dataset, cluster), codgasINP)
+                print("%s %s"%(dataset, cluster), file=codgasINP)
 
         
     def thrEstimation(self):
