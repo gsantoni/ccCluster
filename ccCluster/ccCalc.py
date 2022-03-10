@@ -44,8 +44,10 @@ class ccCalc():
         for root, dirs, files in os.walk('.'):
             directory=root.lstrip('.')
             folder=self.CurrentDir+directory
-            if 'XDS_ASCII.HKL' in files:
-                self.argList.append(folder+'/XDS_ASCII.HKL')
+#            if 'XDS_ASCII.HKL' in files:
+#                self.argList.append(folder+'/XDS_ASCII.HKL')
+            structures = [folder+'/'+fi for fi in files if fi.endswith(".HKL")]
+        self.argList = structures
         self.Arrays= self.loadReflections()
         #self.writeLog()
         self.results = self.calcSerial()
